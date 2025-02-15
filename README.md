@@ -360,6 +360,8 @@ Open another terminal to call the service that gets the current position:
 
     ros2 service call /get_pose_cmd roarm_msgs/srv/GetPoseCmd
 
+![image](images/get_pose_cmd.png)
+
 ### 7.2 Move the End-Effector to a Specified Pose
 
 Call the service to control the end-effector's pose:
@@ -368,9 +370,15 @@ for roarm_m2:
 
     ros2 service call /move_joint_cmd roarm_msgs/srv/MoveJointCmd "{x: 0.2, y: 0, z: 0}"
 
+<video src="https://github.com/user-attachments/assets/4900a917-1fdd-4e2a-9560-ef942d977248" 
+controls="controls" width="500" height="300"></video>
+
 for roarm_m3:
 
     ros2 service call /move_joint_cmd roarm_msgs/srv/MoveJointCmd "{x: 0.3, y: 0, z: 0.1, roll: 0.2, pitch: 0.2, yaw: 0}"
+
+<video src="https://github.com/user-attachments/assets/601d052f-48e4-48f8-bc2b-32748a416e88" 
+controls="controls" width="500" height="300"></video>
 
 Here, x, y, and z are the coordinates of the target point in meters.
 roll, pitch, and yaw are the rotation angles of the end-effector in radians.
@@ -381,22 +389,40 @@ By calling this service, you can control the robotic arm to move to the target p
 
 Call the service to make the robotic arm move to the specified pose at line trajectory:
 
-    ros2 service call /move_line_cmd roarm_msgs/srv/MoveLineCmd "{x: 0.2, y: 0.2, z: 0.2}"
+    ros2 service call /move_line_cmd roarm_msgs/srv/MoveLineCmd "{x: 0.2, y: 0.2, z: 0.1}"
 
 Here, x, y, and z are the coordinates of the target point in meters.
 
 By calling this service, you can control the robotic arm to draw a circle at the desired position.
 
+<video src="https://github.com/user-attachments/assets/2a3640dc-8719-459a-a271-f777fdbabb5c" 
+controls="controls" width="500" height="300"></video>
+
+<video src="https://github.com/user-attachments/assets/6f7cb9b1-ba04-48d5-adf3-e535a987da25" 
+controls="controls" width="500" height="300"></video>
+
 ### 7.4 Move the End-Effector to a Specified Pose at arc trajectory(for roarm_m3,keep roll, pitch)
 
 Call the service to make the robotic arm move to the specified pose at arc trajectory:
 
+for roarm_m2:
+
     ros2 service call /move_circle_cmd roarm_msgs/srv/MoveCircleCmd "{x0: 0.2, y0: 0.1, z0: 0.2, x1: 0.2, y1: 0.2, z1: 0.2 }"
+
+for roarm_m3:
+
+ros2 service call /move_circle_cmd roarm_msgs/srv/MoveCircleCmd "{x0: 0.2, y0: 0.1, z0: 0.2, x1: 0.2, y1: 0.2, z1: 0.2 }"
 
 Here, x0, y0, and z0 are the coordinates of the center point in meters.
 x1, y1, and z1 are the coordinates of the target point in meters.
 
 By calling this service, you can control the robotic arm move to the target pose at arc trajectory.
+
+<video src="https://github.com/user-attachments/assets/2c58863a-0891-4318-b904-0ae17346ca59" 
+controls="controls" width="500" height="300"></video>
+
+<video src="https://github.com/user-attachments/assets/a9bb9617-6845-4c56-abe3-8e108debb415" 
+controls="controls" width="500" height="300"></video>
 
 By calling this service, you can control the robotic arm to draw a circle at the desired pose.
 
@@ -404,10 +430,12 @@ By calling this service, you can control the robotic arm to draw a circle at the
 
 Publish data to a topic and use actions to control the radian position of the gripper:
 
-    ros2 topic pub /gripper_cmd std_msgs/msg/Float32  "{data: 0.0}" -1
+    ros2 topic pub /gripper_cmd std_msgs/msg/Float32  "{data: 0.5}" -1
 
 Here, the data is the coordinates of the target point of the gripper, in radians.
 The gripper's range is 0.0~1.5.
+
+![image](images/gripper_cmd.png)
 
 By invoking this service, you can control the position of the robotic arm gripper to move the target radian.
 
