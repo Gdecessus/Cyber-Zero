@@ -208,9 +208,9 @@ Note: When you run the following command, the robot's URDF in Rviz2 will publish
 
     ros2 launch roarm_description display.launch.py
 
-<video src="https://github.com/user-attachments/assets/34950c25-5701-48fa-a2ec-813ded7817d8" controls="controls" width="500" height="300"></video>
+<video src="https://github.com/user-attachments/assets/a93bf92d-493e-42dc-b3bd-529b0b796220" controls="controls" width="500" height="300"></video>
 
-<video src="https://github.com/user-attachments/assets/7327f743-26c2-4f89-901c-b859396299a3" 
+<video src="https://github.com/user-attachments/assets/e818f88f-a4e7-45c9-9b53-630a1d1bb235" 
 controls="controls" width="500" height="300"></video>
 
 If you do not see the joint control panel, click the gear icon on the left to bring it to the forefront.
@@ -253,10 +253,10 @@ When controlling the gripper, it should be selected as in the picture
 
 Note: After executing this command, the robotic arm will move, with the forearm extending forward and parallel to the ground.
 
-<video src="https://github.com/user-attachments/assets/42e9b4d4-6824-47b3-aafc-8f7d27fea9b7" 
+<video src="https://github.com/user-attachments/assets/d0ebc3ce-4761-40a7-8e54-b8d493a7fdc9" 
 controls="controls" width="500" height="300"></video>
 
-<video src="https://github.com/user-attachments/assets/c9c50267-3dba-4e9f-925d-2142e86fea80" 
+<video src="https://github.com/user-attachments/assets/7b70ffe4-ceb4-4014-a98d-f8188c0ba63d" 
 controls="controls" width="500" height="300"></video>
 
 If the robotic arm is not displayed in Rviz2, click on the `Fixed Frame` option in the Displays window after launching Rviz2. Beside `map`, a triangle icon will appear; click on this icon, select `world`, and press Enter to confirm.
@@ -285,7 +285,7 @@ Keep this terminal window active and use the following keys to control the robot
 for roarm_m2:
 ![image](images/keyboard_ctrl_roarm_m2.png)
 
-<video src="https://github.com/user-attachments/assets/f81e3a54-6350-4596-b5dd-eba0052ec80d" 
+<video src="https://github.com/user-attachments/assets/3b1e0cd4-7f5d-4b34-815c-9ff3c9fb8353" 
 controls="controls" width="500" height="300"></video>
 
 Coordinate Control:
@@ -310,7 +310,7 @@ Joint Control:
 for roarm_m3:
 ![image](images/keyboard_ctrl_roarm_m3.png)
 
-<video src="https://github.com/user-attachments/assets/1266b30f-944f-4b30-8be3-0940762e9247" 
+<video src="https://github.com/user-attachments/assets/74fa3424-3ceb-4f43-8879-948932a3bd58" 
 controls="controls" width="500" height="300"></video>
 
 Coordinate Control:
@@ -422,10 +422,10 @@ Open a new terminal and run the following command to start the Moveit MTC demo:
 
     ros2 launch roarm_moveit_mtc_demo run.launch.py exe:=cartesian
 
-<video src="https://github.com/user-attachments/assets/be4915c6-e07e-47e5-86b0-5b591cbe2adb" 
+<video src="https://github.com/user-attachments/assets/c465a960-e91e-4dda-bb04-a5426a71cd25" 
 controls="controls" width="500" height="300"></video>
 
-<video src="https://github.com/user-attachments/assets/5b53dc0d-3426-4d61-b472-224d28ec2f76" 
+<video src="https://github.com/user-attachments/assets/571c1e8f-02e8-4d3e-9ca3-90f30af4f9d2" 
 controls="controls" width="500" height="300"></video>
 
 ### 8.2 Cartesian Modular demo
@@ -438,10 +438,10 @@ Open a new terminal and run the following command to start the Moveit MTC demo:
 
     ros2 launch roarm_moveit_mtc_demo run.launch.py exe:=exe:=cartesian_modular
 
-<video src="https://github.com/user-attachments/assets/400e6eab-aba0-4480-a0f6-36d8c2073d67" 
+<video src="https://github.com/user-attachments/assets/dee784fb-b0fe-403e-86de-576d95bf0c53" 
 controls="controls" width="500" height="300"></video>
 
-<video src="https://github.com/user-attachments/assets/342214eb-c585-4f81-b3b4-03c7d2317b6e" 
+<video src="https://github.com/user-attachments/assets/ee04d449-083b-44a0-82ea-706ecf5a65cd" 
 controls="controls" width="500" height="300"></video>
 
 ### 8.3 Pick Place demo
@@ -454,8 +454,8 @@ Open a new terminal and run the following command to start the Moveit MTC demo:
 
     ros2 launch roarm_moveit_mtc_demo run.launch.py exe:=pick_place
 
-<video src="https://github.com/user-attachments/assets/20cc1290-ba8c-4b24-b0d0-5394b245e24f" 
+<video src="https://github.com/user-attachments/assets/4719dfa7-7f53-428f-bdd5-b873e429cc6a" 
 controls="controls" width="500" height="300"></video>
 
-<video src="https://github.com/user-attachments/assets/637c7944-c1fe-474a-a9ff-b36480b905f6" 
+<video src="https://github.com/user-attachments/assets/c8d503ce-545e-49d3-a003-15dd505da9fc" 
 controls="controls" width="500" height="300"></video>
