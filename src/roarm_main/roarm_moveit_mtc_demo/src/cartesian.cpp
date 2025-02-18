@@ -158,9 +158,11 @@ Task createTask(const rclcpp::Node::SharedPtr& node) {
 
 int main(int argc, char** argv) {
 	rclcpp::init(argc, argv);
-	auto node = rclcpp::Node::make_shared("mtc_tutorial");
+        rclcpp::NodeOptions options;
+        rclcpp::Logger LOGGER = rclcpp::get_logger("mtc_tutorial");
+        options.automatically_declare_parameters_from_overrides(true); 
+	auto node = rclcpp::Node::make_shared("mtc_tutorial", options);
 	std::thread spinning_thread([node] { rclcpp::spin(node); });
-
 	auto task = createTask(node);
 	try {
 		if (task.plan())

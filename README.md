@@ -441,6 +441,10 @@ By invoking this service, you can control the position of the robotic arm grippe
 
 ## 8 Moveit MTC demo
 
+After selecting the corresponding complete path, click "Exec" Button to execute the demo.
+
+![image](images/roarm_moveit_mtc_demo_exec.png)
+
 ### 8.1 Cartesian demo
 Run the launch file for MTC demo, which relies on MoveIt2 for mtc planning:
 
