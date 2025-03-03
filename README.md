@@ -5,7 +5,7 @@
 
 # ROS2 + Moveit2 for RoArm
 
-## 1 Installing ROS2 Applications for RoArm-M2-S on Ubuntu 22.04 (ROS2 Humble)
+## 1 Installing ROS2 Applications for RoArm on Ubuntu 22.04 (ROS2 Humble)
 - Download the Ubuntu 22.04 image
     - Link: [Ubuntu 22.04.4 Desktop Image](https://releases.ubuntu.com/jammy/ubuntu-22.04.4-desktop-amd64.iso)
 - Download and install Oracle VM VirtualBox
