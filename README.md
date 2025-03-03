@@ -63,22 +63,12 @@ Source the setup script:
     echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
     source ~/.bashrc
 
-Install Python3 libraries:
+Install Python3 libraries :
 
 ##### pip install
 
 ```bash
-pip install roarm-sdk==0.0.1
-```
-
-##### source code
-
-```bash
-sudo apt install python3-pip
-git clone https://github.com/DUDULRX/waveshare_roarm_sdk.git
-cd waveshare_roarm_sdk
-python3 -m pip install -r requirements.txt
-python3 setup.py install
+pip install -r requirements.txt
 ```
 
 Initial compilation:
