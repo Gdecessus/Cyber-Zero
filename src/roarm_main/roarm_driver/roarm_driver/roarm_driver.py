@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from serial import SerialException
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import Pose
+from std_msgs.msg import Float32
 import os
 from roarm_sdk.roarm import roarm
 
