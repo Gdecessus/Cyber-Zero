@@ -15,7 +15,6 @@ class RoarmDriver(Node):
         baud_rate = self.get_parameter('baud_rate').value
         self.roarm_type = os.environ['ROARM_MODEL']
         self.roarm = roarm(roarm_type=self.roarm_type, port=serial_port_name, baudrate=baud_rate)
-        self.roarm.echo_set(cmd=0)
         
         self.joint_states_sub = self.create_subscription(JointState, 'joint_states', self.joint_states_callback, 10)    
         self.led_ctrl_sub = self.create_subscription(Float32, 'led_ctrl', self.led_ctrl_callback, 10)
