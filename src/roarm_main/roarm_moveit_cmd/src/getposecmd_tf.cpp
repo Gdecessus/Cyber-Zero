@@ -66,7 +66,7 @@ public:
 
 private:
     std::string base_frame = "base_link";
-    std::string end_effector_frame = "hand_cp"; 
+    std::string end_effector_frame = "hand_tcp"; 
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
     std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr publisher_;
