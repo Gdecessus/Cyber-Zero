@@ -55,7 +55,7 @@ Install dependencies:
     sudo apt install ros-humble-moveit-*
     sudo apt remove ros-humble-moveit-servo-*
     sudo apt install ros-humble-generate-parameter-library
-    sudo apt install ros-humble-pybinding-tools
+    sudo apt install ros-humble-py-binding-tools
 
 Add ROS2 to the source
 Source the setup script:
