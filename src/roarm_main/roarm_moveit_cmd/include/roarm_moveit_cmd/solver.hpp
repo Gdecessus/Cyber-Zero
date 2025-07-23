@@ -115,7 +115,7 @@ std::array<double, 5>  computePosbyJointRad(double base_joint_rad, double should
     double aOut, bOut, cOut, dOut, eOut, fOut;
 
     polarToCartesian(l2, ((M_PI / 2) - (shoulder_joint_rad + t2rad)), aOut, bOut);
-    polarToCartesian(l3, ((M_PI / 2) - (elbow_joint_rad + shoulder_joint_rad)), cOut, dOut);
+    polarToCartesian(l3, ((M_PI / 2) - (elbow_joint_rad + shoulder_joint_rad + t3rad)), cOut, dOut);
 
     r_ee = aOut + cOut;
     z_ee = bOut + dOut;
