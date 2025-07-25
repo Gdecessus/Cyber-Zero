@@ -99,11 +99,11 @@ Then, set the robotic arm model，
 
 for roarm_m2
 
-    echo "ROARM_MODEL=roarm_m2" >> ~/.bashrc 
+    echo "export ROARM_MODEL=roarm_m2" >> ~/.bashrc 
     source ~/.bashrc 
 for roarm_m3
 
-    echo "ROARM_MODEL=roarm_m3" >> ~/.bashrc 
+    echo "export ROARM_MODEL=roarm_m3" >> ~/.bashrc 
     source ~/.bashrc 
     
 At this point, you can use the tutorial content. Some packages may generate stderr output during the compilation process, which can be ignored.
