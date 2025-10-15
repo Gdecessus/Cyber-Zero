@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.7">
+  <diagram name="Data Flow" id="dfd">
+    <mxGraphModel dx="1327" dy="742" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Data Flow Diagram" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="312" y="10" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="player" value="Human Player" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="robot" value="Physical Robot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="855" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="process1" value="1.0&#xa;Parse Player Move" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="280" y="185" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="process2" value="2.0&#xa;Calculate AI Move" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="480" y="185" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="process3" value="3.0&#xa;Validate Move" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="680" y="185" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="process4" value="4.0&#xa;Plan Trajectory" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="680" y="355" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="process5" value="5.0&#xa;Execute Motion" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="870" y="355" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="store1" value="D1: Board State" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="420" y="340" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="store2" value="D2: AI Model" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="455" y="70" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="store3" value="D3: Game History" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="255" y="340" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="flow1" value="Player move (UCI)" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="player" target="process1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow2" value="Validated move" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="process1" target="process2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow3" value="Request evaluation" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;" parent="1" source="process2" target="store2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow4" value="Policy + Value" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;" parent="1" source="store2" target="process2" edge="1">
+          <mxGeometry x="-0.3846" width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow5" value="AI move (UCI)" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="process2" target="process3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow6" value="Legal move" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="process3" target="process4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow7" value="Current state" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;" parent="1" source="store1" target="process3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow8" value="Updated state" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;" parent="1" source="process3" target="store1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow9" value="Joint angles" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="process4" target="process5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow10" value="Motor commands" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="process5" target="robot" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow11" value="Move completed" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;" parent="1" source="robot" target="process5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow12" value="Store game" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;curved=1;" parent="1" source="process1" target="store3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

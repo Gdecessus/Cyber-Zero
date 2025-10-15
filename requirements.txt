@@ -1,0 +1,18 @@
+# Core Dependencies
+tensorflow>=2.10.0
+numpy>=1.21.0
+chess>=1.9.0
+
+# ROS2 (installed separately via apt)
+# rclpy
+# std_msgs
+# geometry_msgs
+
+# Development Tools
+pytest>=7.0.0
+black>=22.0.0
+flake8>=4.0.0
+
+# Jupyter for Analysis
+jupyter>=1.0.0
+matplotlib>=3.5.0
