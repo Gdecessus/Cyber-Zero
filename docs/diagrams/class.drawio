@@ -1,0 +1,199 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Draw.io" version="22.0.0" etag="use-case-chess-v2" type="device">
+  <diagram name="Use Case Diagram" id="use-case-chess-nn">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- System Boundary -->
+        <mxCell id="system" value="Chess Neural Network System with Robotic Arm" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;verticalAlign=top;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="600" height="720" as="geometry" />
+        </mxCell>
+        
+        <!-- Actors -->
+        <mxCell id="player" value="Player" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="300" width="60" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="ai" value="AI Agent" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="200" width="60" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="robot" value="Robotic Arm" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="480" width="60" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases - Player Interaction -->
+        <mxCell id="uc1" value="Play Chess Game" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="120" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc2" value="Make Move on&#xa;Physical Board" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="220" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc3" value="View Game on&#xa;Raspberry Pi Screen" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="320" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc4" value="Start New Game" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="420" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases - AI Agent -->
+        <mxCell id="uc5" value="Calculate Best Move" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="120" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc6" value="Run MCTS Search" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="220" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc7" value="Evaluate Position&#xa;with Neural Network" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="320" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases - Robotic Arm -->
+        <mxCell id="uc8" value="Move Piece&#xa;Physically" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="700" y="440" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc9" value="Execute AI Move" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="700" y="540" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc10" value="Execute Player Move" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="700" y="640" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases - System -->
+        <mxCell id="uc11" value="Detect Player Move" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="540" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc12" value="Update Board State" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="680" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc13" value="Display Move&#xa;on Screen" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="680" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Associations - Player -->
+        <mxCell id="assoc1" edge="1" parent="1" source="player" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc2" edge="1" parent="1" source="player" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc3" edge="1" parent="1" source="player" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc4" edge="1" parent="1" source="player" target="uc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Associations - AI Agent -->
+        <mxCell id="assoc5" edge="1" parent="1" source="ai" target="uc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc6" edge="1" parent="1" source="ai" target="uc6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc7" edge="1" parent="1" source="ai" target="uc7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Associations - Robotic Arm -->
+        <mxCell id="assoc8" edge="1" parent="1" source="robot" target="uc8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc9" edge="1" parent="1" source="robot" target="uc9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc10" edge="1" parent="1" source="robot" target="uc10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Include/Extend Relationships -->
+        <mxCell id="include1" edge="1" parent="1" source="uc1" target="uc2" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include1-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="185" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include2" edge="1" parent="1" source="uc2" target="uc11" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include2-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="380" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include3" edge="1" parent="1" source="uc11" target="uc10" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include3-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="540" y="585" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include4" edge="1" parent="1" source="uc5" target="uc6" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include4-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="185" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include5" edge="1" parent="1" source="uc6" target="uc7" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include5-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="285" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include6" edge="1" parent="1" source="uc5" target="uc9" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include6-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="335" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include7" edge="1" parent="1" source="uc9" target="uc8" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include7-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="505" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include8" edge="1" parent="1" source="uc10" target="uc8" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include8-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="605" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include9" edge="1" parent="1" source="uc8" target="uc12" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include9-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="585" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include10" edge="1" parent="1" source="uc12" target="uc13" style="dashed=1;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include10-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="720" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
