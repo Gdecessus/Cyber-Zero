@@ -1,196 +1,187 @@
-<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Draw.io" version="22.0.0" etag="use-case-chess-v2" type="device">
-  <diagram name="Use Case Diagram" id="use-case-chess-nn">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Draw.io" version="22.0.0" etag="class-diagram-chess" type="device">
+  <diagram name="Class Diagram" id="class-diagram-chess-nn">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         
-        <!-- System Boundary -->
-        <mxCell id="system" value="Chess Neural Network System with Robotic Arm" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;verticalAlign=top;fontStyle=1;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="300" y="80" width="600" height="720" as="geometry" />
+        <!-- ChessGame Class -->
+        <mxCell id="class_game" value="ChessGame" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="280" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="game_attrs" value="- board: ChessBoard&#xa;- current_player: str&#xa;- move_history: list&#xa;- game_over: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_game">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="game_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_game">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="game_methods" value="+ start_game(): void&#xa;+ make_move(move: Move): bool&#xa;+ is_game_over(): bool&#xa;+ get_winner(): str&#xa;+ reset(): void&#xa;# Pseudo: loop until checkmate/draw" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_game">
+          <mxGeometry y="98" width="280" height="102" as="geometry" />
         </mxCell>
         
-        <!-- Actors -->
-        <mxCell id="player" value="Player" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
-          <mxGeometry x="120" y="300" width="60" height="100" as="geometry" />
+        <!-- ChessBoard Class -->
+        <mxCell id="class_board" value="ChessBoard" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="280" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="board_attrs" value="- board_state: array[8][8]&#xa;- white_pieces: list&#xa;- black_pieces: list&#xa;- en_passant: tuple" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_board">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="board_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_board">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="board_methods" value="+ get_legal_moves(): list&#xa;+ apply_move(move: Move): void&#xa;+ is_check(): bool&#xa;+ is_checkmate(): bool&#xa;+ to_array(): array&#xa;# Pseudo: validate moves with chess rules" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_board">
+          <mxGeometry y="98" width="280" height="102" as="geometry" />
         </mxCell>
         
-        <mxCell id="ai" value="AI Agent" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="200" width="60" height="100" as="geometry" />
+        <!-- Move Class -->
+        <mxCell id="class_move" value="Move" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="280" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="move_attrs" value="- from_square: tuple&#xa;- to_square: tuple&#xa;- piece: str&#xa;- is_capture: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_move">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="move_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_move">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="move_methods" value="+ to_uci(): str&#xa;+ from_uci(uci: str): Move&#xa;+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_move">
+          <mxGeometry y="98" width="280" height="52" as="geometry" />
         </mxCell>
         
-        <mxCell id="robot" value="Robotic Arm" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="480" width="60" height="100" as="geometry" />
+        <!-- NeuralNetwork Class -->
+        <mxCell id="class_nn" value="NeuralNetwork" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="320" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="nn_attrs" value="- model: Sequential&#xa;- input_shape: tuple&#xa;- learning_rate: float&#xa;- model_path: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_nn">
+          <mxGeometry y="26" width="320" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="nn_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_nn">
+          <mxGeometry y="90" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="nn_methods" value="+ build_model(): void&#xa;+ predict(board_state: array): (policy, value)&#xa;+ save_model(path: str): void&#xa;+ load_model(path: str): void&#xa;# Pseudo: CNN layers -&gt; policy head + value head&#xa;# Policy: move probabilities, Value: win probability" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_nn">
+          <mxGeometry y="98" width="320" height="122" as="geometry" />
         </mxCell>
         
-        <!-- Use Cases - Player Interaction -->
-        <mxCell id="uc1" value="Play Chess Game" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="120" width="140" height="70" as="geometry" />
+        <!-- MCTS Class -->
+        <mxCell id="class_mcts" value="MCTS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="320" width="320" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="mcts_attrs" value="- root: Node&#xa;- neural_network: NeuralNetwork&#xa;- num_simulations: int&#xa;- exploration_constant: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_mcts">
+          <mxGeometry y="26" width="320" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="mcts_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_mcts">
+          <mxGeometry y="90" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="mcts_methods" value="+ search(board: ChessBoard): Move&#xa;+ select_node(node: Node): Node&#xa;+ expand_node(node: Node): void&#xa;+ backpropagate(node: Node, value: float): void&#xa;# Pseudo: for n simulations:&#xa;#   select -&gt; expand -&gt; evaluate -&gt; backprop" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_mcts">
+          <mxGeometry y="98" width="320" height="122" as="geometry" />
         </mxCell>
         
-        <mxCell id="uc2" value="Make Move on&#xa;Physical Board" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="220" width="140" height="70" as="geometry" />
+        <!-- Node Class -->
+        <mxCell id="class_node" value="Node" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="320" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="node_attrs" value="- state: ChessBoard&#xa;- parent: Node&#xa;- children: list&#xa;- visit_count: int&#xa;- total_value: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_node">
+          <mxGeometry y="26" width="280" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="node_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_node">
+          <mxGeometry y="100" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="node_methods" value="+ is_fully_expanded(): bool&#xa;+ best_child(): Node&#xa;+ add_child(node: Node): void&#xa;# Pseudo: UCB1 formula for selection" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_node">
+          <mxGeometry y="108" width="280" height="72" as="geometry" />
         </mxCell>
         
-        <mxCell id="uc3" value="View Game on&#xa;Raspberry Pi Screen" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="320" width="140" height="70" as="geometry" />
+        <!-- Trainer Class -->
+        <mxCell id="class_trainer" value="Trainer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="40" width="320" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="trainer_attrs" value="- neural_network: NeuralNetwork&#xa;- training_data: list&#xa;- batch_size: int&#xa;- epochs: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_trainer">
+          <mxGeometry y="26" width="320" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="trainer_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_trainer">
+          <mxGeometry y="90" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="trainer_methods" value="+ self_play(num_games: int): list&#xa;+ train(data: list): void&#xa;+ save_training_data(path: str): void&#xa;+ load_training_data(path: str): list&#xa;# Pseudo: play games -&gt; collect (state, policy, value)&#xa;# Train network on collected data" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_trainer">
+          <mxGeometry y="98" width="320" height="122" as="geometry" />
         </mxCell>
         
-        <mxCell id="uc4" value="Start New Game" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="420" width="140" height="70" as="geometry" />
+        <!-- GameState Class -->
+        <mxCell id="class_state" value="GameState" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="600" width="280" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="state_attrs" value="- board: ChessBoard&#xa;- turn: str&#xa;- castling_rights: dict&#xa;- halfmove_clock: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_state">
+          <mxGeometry y="26" width="280" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="state_line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="class_state">
+          <mxGeometry y="90" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="state_methods" value="+ clone(): GameState&#xa;+ get_hash(): str&#xa;+ to_tensor(): array" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="class_state">
+          <mxGeometry y="98" width="280" height="52" as="geometry" />
         </mxCell>
         
-        <!-- Use Cases - AI Agent -->
-        <mxCell id="uc5" value="Calculate Best Move" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="700" y="120" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc6" value="Run MCTS Search" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="700" y="220" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc7" value="Evaluate Position&#xa;with Neural Network" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="700" y="320" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <!-- Use Cases - Robotic Arm -->
-        <mxCell id="uc8" value="Move Piece&#xa;Physically" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="700" y="440" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc9" value="Execute AI Move" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="700" y="540" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc10" value="Execute Player Move" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="700" y="640" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <!-- Use Cases - System -->
-        <mxCell id="uc11" value="Detect Player Move" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="540" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc12" value="Update Board State" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="520" y="680" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="uc13" value="Display Move&#xa;on Screen" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="680" width="140" height="70" as="geometry" />
-        </mxCell>
-        
-        <!-- Associations - Player -->
-        <mxCell id="assoc1" edge="1" parent="1" source="player" target="uc1">
+        <!-- Relationships -->
+        <!-- ChessGame has ChessBoard -->
+        <mxCell id="rel1" edge="1" parent="1" source="class_game" target="class_board" style="endArrow=diamondThin;endFill=1;endSize=12;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        
-        <mxCell id="assoc2" edge="1" parent="1" source="player" target="uc2">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="rel1_label" value="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="260" width="20" height="20" as="geometry" />
         </mxCell>
         
-        <mxCell id="assoc3" edge="1" parent="1" source="player" target="uc3">
+        <!-- ChessBoard uses Move -->
+        <mxCell id="rel2" edge="1" parent="1" source="class_board" target="class_move" style="endArrow=open;endFill=0;dashed=1;">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel2_label" value="uses" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="520" width="40" height="20" as="geometry" />
         </mxCell>
         
-        <mxCell id="assoc4" edge="1" parent="1" source="player" target="uc4">
+        <!-- MCTS uses NeuralNetwork -->
+        <mxCell id="rel3" edge="1" parent="1" source="class_mcts" target="class_nn" style="endArrow=open;endFill=0;dashed=1;">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel3_label" value="uses" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="280" width="40" height="20" as="geometry" />
         </mxCell>
         
-        <!-- Associations - AI Agent -->
-        <mxCell id="assoc5" edge="1" parent="1" source="ai" target="uc5">
+        <!-- MCTS has Node -->
+        <mxCell id="rel4" edge="1" parent="1" source="class_mcts" target="class_node" style="endArrow=diamondThin;endFill=0;endSize=12;">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel4_label" value="*" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="760" y="400" width="20" height="20" as="geometry" />
         </mxCell>
         
-        <mxCell id="assoc6" edge="1" parent="1" source="ai" target="uc6">
+        <!-- Trainer uses NeuralNetwork -->
+        <mxCell id="rel5" edge="1" parent="1" source="class_trainer" target="class_nn" style="endArrow=open;endFill=0;dashed=1;">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel5_label" value="trains" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="910" y="265" width="50" height="20" as="geometry" />
         </mxCell>
         
-        <mxCell id="assoc7" edge="1" parent="1" source="ai" target="uc7">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- GameState contains ChessBoard -->
+        <mxCell id="rel6" edge="1" parent="1" source="class_state" target="class_board" style="endArrow=diamondThin;endFill=1;endSize=12;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="650" />
+              <mxPoint x="360" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel6_label" value="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="520" width="20" height="20" as="geometry" />
         </mxCell>
         
-        <!-- Associations - Robotic Arm -->
-        <mxCell id="assoc8" edge="1" parent="1" source="robot" target="uc8">
-          <mxGeometry relative="1" as="geometry" />
+        <!-- ChessGame uses MCTS -->
+        <mxCell id="rel7" edge="1" parent="1" source="class_game" target="class_mcts" style="endArrow=open;endFill=0;dashed=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="140" />
+              <mxPoint x="360" y="430" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        
-        <mxCell id="assoc9" edge="1" parent="1" source="robot" target="uc9">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="assoc10" edge="1" parent="1" source="robot" target="uc10">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        
-        <!-- Include/Extend Relationships -->
-        <mxCell id="include1" edge="1" parent="1" source="uc1" target="uc2" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include1-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="440" y="185" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include2" edge="1" parent="1" source="uc2" target="uc11" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include2-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="420" y="380" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include3" edge="1" parent="1" source="uc11" target="uc10" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include3-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="540" y="585" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include4" edge="1" parent="1" source="uc5" target="uc6" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include4-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="760" y="185" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include5" edge="1" parent="1" source="uc6" target="uc7" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include5-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="760" y="285" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include6" edge="1" parent="1" source="uc5" target="uc9" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include6-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="760" y="335" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include7" edge="1" parent="1" source="uc9" target="uc8" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include7-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="760" y="505" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include8" edge="1" parent="1" source="uc10" target="uc8" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include8-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="760" y="605" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include9" edge="1" parent="1" source="uc8" target="uc12" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include9-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="620" y="585" width="80" height="20" as="geometry" />
-        </mxCell>
-        
-        <mxCell id="include10" edge="1" parent="1" source="uc12" target="uc13" style="dashed=1;html=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="include10-label" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="460" y="720" width="80" height="20" as="geometry" />
+        <mxCell id="rel7_label" value="uses" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="280" width="40" height="20" as="geometry" />
         </mxCell>
         
       </root>
