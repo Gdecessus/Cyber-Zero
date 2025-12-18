@@ -5,6 +5,13 @@
 
 # ROS2 + Moveit2 for RoArm
 
+## Containerized setup (Windows with Docker Desktop)
+- Build the image once: `docker compose build`
+- Start a dev shell that uses your Windows files: `docker compose run --rm roarm`
+- Inside the container run (first time): `source /opt/ros/humble/setup.sh && colcon build --symlink-install`
+- If the sibling project `../Cyber-Zero` exists, it is auto-mounted at `/opt/Cyber-Zero` and installed editable (`pip install -e /opt/Cyber-Zero`) so ROS nodes can import its chess/AI logic without merging repos.
+- VS Code users: open this folder and choose **Dev Containers: Reopen in Container** to get an IDE inside the container while editing files on Windows (also mounts `../Cyber-Zero`).
+
 ## 1 Installing ROS2 Applications for RoArm on Ubuntu 22.04 (ROS2 Humble)
 - Download the Ubuntu 22.04 image
     - Link: [Ubuntu 22.04.4 Desktop Image](https://releases.ubuntu.com/jammy/ubuntu-22.04.4-desktop-amd64.iso)

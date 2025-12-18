@@ -1,0 +1,13 @@
+.git
+.gitignore
+build
+install
+log
+**/__pycache__/
+**/*.pyc
+images
+.vscode
+.idea
+.devcontainer
+Dockerfile
+docker-compose.yml

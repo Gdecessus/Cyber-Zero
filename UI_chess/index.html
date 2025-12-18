@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberZero Kiosk</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app__header">
+      <div class="brand">
+        <div class="brand__dot"></div>
+        <div>
+          <div class="brand__title">CyberZero</div>
+          <div class="brand__subtitle">AI Chess · Robot Arm</div>
+        </div>
+      </div>
+      <div class="status" id="statusText">Idle</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel panel--controls">
+        <h2>Session</h2>
+        <div class="buttons">
+          <button class="btn primary" id="btnStart">Start Game</button>
+          <button class="btn" id="btnSim">Simulation Mode</button>
+          <button class="btn ghost" id="btnSettings">Settings</button>
+        </div>
+
+        <h3>Robot Control</h3>
+        <div class="buttons">
+          <button class="btn" id="btnPause">Pause</button>
+          <button class="btn" id="btnResume">Resume</button>
+          <button class="btn ghost" id="btnReset">Reset</button>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Live Status</div>
+          <ul class="tags" id="statusChips">
+            <li class="tag">Idle</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel panel--board">
+        <div class="board__header">
+          <div>
+            <div class="label">Turn</div>
+            <div class="value" id="turnText">—</div>
+          </div>
+          <div>
+            <div class="label">Mode</div>
+            <div class="value" id="modeText">Not started</div>
+          </div>
+          <div>
+            <div class="label">Connection</div>
+            <div class="value" id="connText">Offline</div>
+          </div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="board__footer">
+          <div class="label">Move Log</div>
+          <div class="log" id="moveLog">No moves yet.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
