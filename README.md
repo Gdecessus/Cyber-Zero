@@ -63,5 +63,3 @@ pip install -r requirements.txt
 ```
 
 ---
-
-Last updated: Oct 15 2024
