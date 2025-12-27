@@ -2,6 +2,7 @@
   ros__parameters:
     # Total planning attempts
     max_solutions: 10
+    execute: true
 
     # Planning group and link names
     arm_group_name: "hand"
@@ -27,10 +28,25 @@
     object_pose: [0.3, 0.0, 0.2, 0.0, 0.0, 0.0]
 
     # Table model
-    spawn_table: true
+    spawn_table: false
     table_name: "table"
     table_dimensions: [0.4, 0.5, 0.1]  # [length, width, height]
     table_pose: [0.3, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    # Chess scene (exact real-world measurements)
+    spawn_chess_scene: true
+    spawn_chess_squares: true
+    chess_reference_frame: "base_link"
+    chess_board_origin: [0.015, -0.150, 0.0]  # a1 corner in base_link
+    chess_board_size: [0.30, 0.30]
+    chess_board_thickness: 0.02
+    chess_square_size: 0.0375
+    chess_square_thickness: 0.001
+    chess_capture_box_size: [0.10, 0.10, 0.02]
+    chess_capture_box_left: [0.15, 0.35, 0.0]   # left side (+Y) of board
+    chess_capture_box_right: [0.15, -0.05, 0.0] # right side (-Y) of board
+    chess_piece_mesh_dir: "/opt/Cyber-Zero/Chess_Pieces"
+    chess_piece_scale: 0.001
 
     # Gripper grasp frame transform [x,y,z,r,p,y]
     grasp_frame_transform: [-0.03, 0.0, 0.0, 0.0, 0.0, 0.0]
