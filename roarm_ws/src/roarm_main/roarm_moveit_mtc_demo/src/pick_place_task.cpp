@@ -38,6 +38,8 @@
 #include <roarm_moveit_mtc_demo/pick_place_task.h>
 #include <geometry_msgs/msg/pose.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
+#include <geometric_shapes/shape_operations.h>
+#include <geometric_shapes/shapes.h>
 #include "pick_place_parameters.hpp"
 
 static const rclcpp::Logger LOGGER = rclcpp::get_logger("roarm_moveit_mtc_demo");
@@ -89,10 +91,143 @@ moveit_msgs::msg::CollisionObject createObject(const pick_place_task_demo::Param
 	return object;
 }
 
+moveit_msgs::msg::CollisionObject createBoard(const pick_place_task_demo::Params& params) {
+	geometry_msgs::msg::Pose pose;
+	pose.position.x = params.chess_board_origin.at(0) + 0.5 * params.chess_board_size.at(0);
+	pose.position.y = params.chess_board_origin.at(1) + 0.5 * params.chess_board_size.at(1);
+	pose.position.z = params.chess_board_origin.at(2) + 0.5 * params.chess_board_thickness;
+	moveit_msgs::msg::CollisionObject object;
+	object.id = "chess_board";
+	object.header.frame_id = params.chess_reference_frame;
+	object.primitives.resize(1);
+	object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+	object.primitives[0].dimensions = { params.chess_board_size.at(0), params.chess_board_size.at(1),
+		                                 params.chess_board_thickness };
+	object.primitive_poses.push_back(pose);
+	return object;
+}
+
+moveit_msgs::msg::CollisionObject createCaptureBox(const pick_place_task_demo::Params& params,
+                                                  const std::string& id,
+                                                  const std::vector<double>& offset) {
+	geometry_msgs::msg::Pose pose;
+	pose.position.x = params.chess_board_origin.at(0) + offset.at(0);
+	pose.position.y = params.chess_board_origin.at(1) + offset.at(1);
+	pose.position.z = params.chess_board_origin.at(2) + 0.5 * params.chess_capture_box_size.at(2);
+	moveit_msgs::msg::CollisionObject object;
+	object.id = id;
+	object.header.frame_id = params.chess_reference_frame;
+	object.primitives.resize(1);
+	object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+	object.primitives[0].dimensions = { params.chess_capture_box_size.at(0), params.chess_capture_box_size.at(1),
+		                                 params.chess_capture_box_size.at(2) };
+	object.primitive_poses.push_back(pose);
+	return object;
+}
+
+moveit_msgs::msg::CollisionObject createSquare(const pick_place_task_demo::Params& params,
+                                               const std::string& id,
+                                               int file_index,
+                                               int rank_index) {
+	geometry_msgs::msg::Pose pose;
+	pose.position.x = params.chess_board_origin.at(0) + (file_index + 0.5) * params.chess_square_size;
+	pose.position.y = params.chess_board_origin.at(1) + (rank_index + 0.5) * params.chess_square_size;
+	pose.position.z = params.chess_board_origin.at(2) + params.chess_board_thickness +
+	                  0.5 * params.chess_square_thickness;
+
+	moveit_msgs::msg::CollisionObject object;
+	object.id = id;
+	object.header.frame_id = params.chess_reference_frame;
+	object.primitives.resize(1);
+	object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+	object.primitives[0].dimensions = { params.chess_square_size, params.chess_square_size,
+		                                 params.chess_square_thickness };
+	object.primitive_poses.push_back(pose);
+	return object;
+}
+
+shape_msgs::msg::Mesh loadMesh(const std::string& resource, double scale) {
+	shapes::Mesh* mesh = shapes::createMeshFromResource(resource, Eigen::Vector3d(scale, scale, scale));
+	shapes::ShapeMsg shape_msg;
+	shapes::constructMsgFromShape(mesh, shape_msg);
+	delete mesh;
+	return boost::get<shape_msgs::msg::Mesh>(shape_msg);
+}
+
+moveit_msgs::msg::CollisionObject createPiece(const pick_place_task_demo::Params& params,
+                                              const std::string& id,
+                                              const std::string& mesh_path,
+                                              int file_index,
+                                              int rank_index) {
+	geometry_msgs::msg::Pose pose;
+	pose.position.x = params.chess_board_origin.at(0) + (file_index + 0.5) * params.chess_square_size;
+	pose.position.y = params.chess_board_origin.at(1) + (rank_index + 0.5) * params.chess_square_size;
+	pose.position.z = params.chess_board_origin.at(2) + params.chess_board_thickness;
+
+	moveit_msgs::msg::CollisionObject object;
+	object.id = id;
+	object.header.frame_id = params.chess_reference_frame;
+	object.meshes.resize(1);
+	object.meshes[0] = loadMesh(mesh_path, params.chess_piece_scale);
+	object.mesh_poses.push_back(pose);
+	return object;
+}
+
 void setupDemoScene(const pick_place_task_demo::Params& params) {
 	// Add table and object to planning scene
 	rclcpp::sleep_for(std::chrono::microseconds(100));  // Wait for ApplyPlanningScene service
 	moveit::planning_interface::PlanningSceneInterface psi;
+	if (params.spawn_chess_scene) {
+		spawnObject(psi, createBoard(params));
+		spawnObject(psi, createCaptureBox(params, "capture_left", params.chess_capture_box_left));
+		spawnObject(psi, createCaptureBox(params, "capture_right", params.chess_capture_box_right));
+		if (params.spawn_chess_squares) {
+			for (int rank = 0; rank < 8; ++rank) {
+				for (int file = 0; file < 8; ++file) {
+					const std::string id = "square_" + std::to_string(file) + "_" + std::to_string(rank);
+					spawnObject(psi, createSquare(params, id, file, rank));
+				}
+			}
+		}
+
+		const std::string base = params.chess_piece_mesh_dir;
+		const std::string rook = "file://" + base + "/Rook-NewStandard.stl";
+		const std::string knight = "file://" + base + "/Knight-NewStandard.stl";
+		const std::string bishop = "file://" + base + "/Bishop-NewStandard.stl";
+		const std::string queen = "file://" + base + "/Queen-NewStandard.stl";
+		const std::string king = "file://" + base + "/King-NewStandard.stl";
+		const std::string pawn = "file://" + base + "/Pawn-NewStandard.stl";
+
+		// White pieces (ranks 1-2)
+		spawnObject(psi, createPiece(params, "white_rook_a1", rook, 0, 0));
+		spawnObject(psi, createPiece(params, "white_knight_b1", knight, 1, 0));
+		spawnObject(psi, createPiece(params, "white_bishop_c1", bishop, 2, 0));
+		spawnObject(psi, createPiece(params, "white_queen_d1", queen, 3, 0));
+		spawnObject(psi, createPiece(params, "white_king_e1", king, 4, 0));
+		spawnObject(psi, createPiece(params, "white_bishop_f1", bishop, 5, 0));
+		spawnObject(psi, createPiece(params, "white_knight_g1", knight, 6, 0));
+		spawnObject(psi, createPiece(params, "white_rook_h1", rook, 7, 0));
+		for (int file = 0; file < 8; ++file) {
+			const std::string id = "white_pawn_" + std::to_string(file) + "_2";
+			spawnObject(psi, createPiece(params, id, pawn, file, 1));
+		}
+
+		// Black pieces (ranks 7-8)
+		spawnObject(psi, createPiece(params, "black_rook_a8", rook, 0, 7));
+		spawnObject(psi, createPiece(params, "black_knight_b8", knight, 1, 7));
+		spawnObject(psi, createPiece(params, "black_bishop_c8", bishop, 2, 7));
+		spawnObject(psi, createPiece(params, "black_queen_d8", queen, 3, 7));
+		spawnObject(psi, createPiece(params, "black_king_e8", king, 4, 7));
+		spawnObject(psi, createPiece(params, "black_bishop_f8", bishop, 5, 7));
+		spawnObject(psi, createPiece(params, "black_knight_g8", knight, 6, 7));
+		spawnObject(psi, createPiece(params, "black_rook_h8", rook, 7, 7));
+		for (int file = 0; file < 8; ++file) {
+			const std::string id = "black_pawn_" + std::to_string(file) + "_7";
+			spawnObject(psi, createPiece(params, id, pawn, file, 6));
+		}
+		return;
+	}
+
 	if (params.spawn_table)
 		spawnObject(psi, createTable(params));
 	spawnObject(psi, createObject(params));

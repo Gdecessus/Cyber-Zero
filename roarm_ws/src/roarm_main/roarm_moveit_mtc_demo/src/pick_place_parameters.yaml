@@ -37,6 +37,48 @@ pick_place_task_demo:
   spawn_table:
     type: bool
     default_value: true
+  spawn_chess_scene:
+    type: bool
+    default_value: false
+  spawn_chess_squares:
+    type: bool
+    default_value: true
+  chess_reference_frame:
+    type: string
+    validation:
+      not_empty<>: []
+  chess_board_origin:
+    type: double_array
+    validation:
+      fixed_size<>: [3]
+  chess_board_size:
+    type: double_array
+    validation:
+      fixed_size<>: [2]
+  chess_board_thickness:
+    type: double
+  chess_square_size:
+    type: double
+  chess_square_thickness:
+    type: double
+  chess_capture_box_size:
+    type: double_array
+    validation:
+      fixed_size<>: [3]
+  chess_capture_box_left:
+    type: double_array
+    validation:
+      fixed_size<>: [3]
+  chess_capture_box_right:
+    type: double_array
+    validation:
+      fixed_size<>: [3]
+  chess_piece_mesh_dir:
+    type: string
+    validation:
+      not_empty<>: []
+  chess_piece_scale:
+    type: double
   max_solutions:
     type: int
     default_value: 10
