@@ -1,0 +1,100 @@
+CLASS ChessModel
+
+    VARIABLES:
+        learning_rate
+        num_residual_blocks
+        num_filters
+        model
+
+
+    CONSTRUCTOR Initialize(lr, blocks, filters)
+        learning_rate       ← lr
+        num_residual_blocks ← blocks
+        num_filters         ← filters
+
+        model ← BuildModel()
+    END CONSTRUCTOR
+
+
+    FUNCTION ResidualBlock(x)
+        # Simple residual block with skip connection
+
+        shortcut ← x
+
+        x ← Conv2D(x, filters = num_filters, kernel = 3x3)
+        x ← BatchNorm(x)
+        x ← ReLU(x)
+
+        x ← Conv2D(x, filters = num_filters, kernel = 3x3)
+        x ← BatchNorm(x)
+
+        x ← Add(x, shortcut)
+        x ← ReLU(x)
+
+        RETURN x
+    END FUNCTION
+
+
+    FUNCTION BuildModel()
+        # Input is the chess board encoded as 8x8x13 tensor
+        input ← InputTensor(8x8x13)
+
+        x ← Conv2D(input, filters = num_filters, kernel = 3x3)
+        x ← BatchNorm(x)
+        x ← ReLU(x)
+
+        FOR i ← 1 TO num_residual_blocks DO
+            x ← ResidualBlock(x)
+        END FOR
+
+
+        # Policy head
+        p ← Conv2D(x, filters = 2, kernel = 1x1)
+        p ← BatchNorm(p)
+        p ← ReLU(p)
+        p ← Flatten(p)
+        policy ← Dense(p, 4672, Softmax)
+
+
+        # Value head
+        v ← Conv2D(x, filters = 1, kernel = 1x1)
+        v ← BatchNorm(v)
+        v ← ReLU(v)
+        v ← Flatten(v)
+        v ← Dense(v, 128, ReLU)
+        value ← Dense(v, 1, Tanh)
+
+
+        model ← CreateModel(input, policy, value)
+
+        Compile model with:
+            Optimizer = Adam(learning_rate)
+            PolicyLoss = CategoricalCrossEntropy
+            ValueLoss  = MeanSquaredError
+
+        RETURN model
+    END FUNCTION
+
+
+    FUNCTION Predict(state)
+        RETURN model.Predict(state)
+    END FUNCTION
+
+
+    FUNCTION Train(X, y, epochs, batch_size)
+        history ← model.Train(X, y, epochs, batch_size)
+        RETURN history
+    END FUNCTION
+
+
+    FUNCTION Save(path)
+        model.Save(path)
+    END FUNCTION
+
+
+    FUNCTION Load(path)
+        model ← LoadModel(path)
+    END FUNCTION
+
+
+END CLASS
