@@ -1,0 +1,216 @@
+CLASS MCTSNode
+    VARIABLES:
+        board          # copy of current board state
+        parent         # parent node (null if root)
+        move           # move that produced this node
+        prior          # prior prob from policy head for this move
+
+        visits
+        value_sum
+        children       # map: move -> child node
+
+
+    CONSTRUCTOR MCTSNode(board, parent = null, move = null, prior = 1.0)
+        self.board    ← Copy(board)
+        self.parent   ← parent
+        self.move     ← move
+        self.prior    ← prior
+
+        self.visits    ← 0
+        self.value_sum ← 0
+        self.children  ← empty map
+    END CONSTRUCTOR
+
+
+    FUNCTION IsExpanded()
+        RETURN (Size(children) > 0)
+    END FUNCTION
+
+
+    FUNCTION IsTerminal()
+        RETURN board.GameOver()
+    END FUNCTION
+
+
+    FUNCTION MeanValue()
+        IF visits = 0 THEN
+            RETURN 0
+        END IF
+        RETURN value_sum / visits
+    END FUNCTION
+
+
+    FUNCTION UCBScore(c)
+        # Standard PUCT-ish style score: Q + U
+        IF visits = 0 THEN
+            RETURN +infinity
+        END IF
+
+        Q ← MeanValue()
+
+        # Encourage exploration of high-prior, low-visit moves
+        U ← c * prior * sqrt(parent.visits) / (1 + visits)
+
+        RETURN Q + U
+    END FUNCTION
+
+
+    FUNCTION SelectChild(c)
+        best_child ← null
+        best_score ← -infinity
+
+        FOR each child in children DO
+            score ← child.UCBScore(c)
+            IF score > best_score THEN
+                best_score ← score
+                best_child ← child
+            END IF
+        END FOR
+
+        RETURN best_child
+    END FUNCTION
+
+
+    FUNCTION Expand(policy_vector)
+        legal_moves ← board.LegalMoves()
+
+        # Pull the policy probability for each legal move
+        probs ← empty list
+        FOR each move in legal_moves DO
+            idx ← MoveToIndex(move)
+            probs.Append(policy_vector[idx])
+        END FOR
+
+        # Normalise (fallback to uniform if all zeros)
+        total ← Sum(probs)
+        IF total > 0 THEN
+            probs ← probs / total
+        ELSE
+            probs ← UniformDistribution(size = Size(legal_moves))
+        END IF
+
+        # Create child nodes
+        FOR i FROM 1 TO Size(legal_moves) DO
+            m ← legal_moves[i]
+            p ← probs[i]
+
+            new_board ← Copy(board)
+            new_board.Push(m)
+
+            children[m] ← New MCTSNode(new_board, parent = self, move = m, prior = p)
+        END FOR
+    END FUNCTION
+
+
+    FUNCTION Backpropagate(value)
+        # value is from the current player's perspective at this node
+        visits    ← visits + 1
+        value_sum ← value_sum + value
+
+        # Flip sign when going up a ply (other player's perspective)
+        IF parent ≠ null THEN
+            parent.Backpropagate(-value)
+        END IF
+    END FUNCTION
+
+END CLASS
+CLASS MCTS
+    VARIABLES:
+        model
+        n_simulations
+        c_param
+
+
+    CONSTRUCTOR MCTS(model, n_simulations = 100, c_param = 1.4)
+        self.model ← model
+        self.n_simulations ← n_simulations
+        self.c_param ← c_param
+    END CONSTRUCTOR
+
+
+    FUNCTION Search(board)
+        root ← New MCTSNode(board)
+
+        FOR sim FROM 1 TO n_simulations DO
+            node ← root
+
+            # 1) Selection: go down the tree using UCB until leaf/terminal
+            WHILE node.IsExpanded() AND NOT node.IsTerminal() DO
+                node ← node.SelectChild(c_param)
+            END WHILE
+
+            # 2) Evaluation / Expansion
+            IF node.IsTerminal() THEN
+                # Convert game result into a value for backprop
+                result ← node.board.Result()    # "1-0", "0-1", or draw
+
+                IF result = "1-0" THEN
+                    value ← +1 if node.board.turn is BLACK else -1
+                ELSE IF result = "0-1" THEN
+                    value ← -1 if node.board.turn is BLACK else +1
+                ELSE
+                    value ← 0
+                END IF
+
+            ELSE
+                state ← BoardToTensor(node.board)
+                (policy, value) ← model.Predict(state)
+
+                policy ← policy[0]       # flatten batch
+                value  ← value[0]        # scalar
+
+                IF NOT node.IsExpanded() THEN
+                    node.Expand(policy)
+                END IF
+            END IF
+
+            # 3) Backpropagate evaluation up the tree
+            node.Backpropagate(value)
+        END FOR
+
+
+        # Convert root children visits into visit counts for legal moves
+        legal_moves ← board.LegalMoves()
+        visit_counts ← empty list
+
+        FOR each move in legal_moves DO
+            IF move exists in root.children THEN
+                visit_counts.Append(root.children[move].visits)
+            ELSE
+                visit_counts.Append(0)
+            END IF
+        END FOR
+
+        RETURN (legal_moves, visit_counts)
+    END FUNCTION
+
+
+    FUNCTION GetMoveProbabilities(board, temperature)
+        (legal_moves, visit_counts) ← Search(board)
+
+        IF Size(legal_moves) = 0 THEN
+            RETURN ([], [])
+        END IF
+
+        IF temperature = 0 THEN
+            # Greedy: pick most visited move
+            best ← ArgMax(visit_counts)
+            probs ← AllZeros(Size(legal_moves))
+            probs[best] ← 1
+        ELSE
+            # Soft selection based on visit counts
+            counts ← ToFloatArray(visit_counts)
+            counts ← counts^(1/temperature)
+
+            total ← Sum(counts)
+            IF total > 0 THEN
+                probs ← counts / total
+            ELSE
+                probs ← UniformDistribution(size = Size(legal_moves))
+            END IF
+        END IF
+
+        RETURN (legal_moves, probs)
+    END FUNCTION
+
+END CLASS
