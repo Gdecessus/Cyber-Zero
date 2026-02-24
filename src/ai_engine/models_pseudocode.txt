@@ -1,3 +1,10 @@
+
+import tensorflow as tf
+from tensorflow import keras
+from keras.models import Model
+from keras.layers import Dense, Conv2D, Flatten, BatchNormalization, Activation, Input, Add
+from keras.optimizers import Adam
+
 CLASS ChessModel
 
     VARIABLES:
