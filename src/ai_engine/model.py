@@ -12,8 +12,20 @@ class ChessModel:
         self.num_filters = num_filters
         self.model = self._build_model()
     
-    def _residual_block():
-      
+    def _residual_block(self, x):
+        shortcut = x
+        
+        x = Conv2D(self.num_filters, 3, padding='same', use_bias=False)(x)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        
+        x = Conv2D(self.num_filters, 3, padding='same', use_bias=False)(x)
+        x = BatchNormalization()(x)
+        
+        x = Add()([shortcut, x])
+        x = Activation('relu')(x)
+        
+        return x 
     def _build_model(self):
 
     def predict():
