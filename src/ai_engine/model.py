@@ -27,7 +27,37 @@ class ChessModel:
         
         return x 
     def _build_model(self):
-
+        board_input = Input(shape=(8, 8, 13), name='board_input')
+        
+        x = Conv2D(self.num_filters, 3, padding='same', use_bias=False)(board_input)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        
+        for _ in range(self.num_residual_blocks):
+            x = self._residual_block(x)
+        
+        policy = Conv2D(2, 1, padding='same', use_bias=False)(x)
+        policy = BatchNormalization()(policy)
+        policy = Activation('relu')(policy)
+        policy = Flatten()(policy)
+        policy = Dense(4672, activation='softmax', name='policy')(policy)
+        
+        value = Conv2D(1, 1, padding='same', use_bias=False)(x)
+        value = BatchNormalization()(value)
+        value = Activation('relu')(value)
+        value = Flatten()(value)
+        value = Dense(128, activation='relu')(value)
+        value = Dense(1, activation='tanh', name='value')(value)
+        
+        model = Model(inputs=board_input, outputs=[policy, value])
+        
+        model.compile(
+            optimizer=Adam(learning_rate=self.learning_rate),
+            loss={'policy': 'categorical_crossentropy', 'value': 'mse'},
+            metrics={'policy': 'accuracy'}
+        )
+        
+        return model
     def predict():
     
     def fit():
