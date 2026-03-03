@@ -1,161 +1,157 @@
-const statusText = document.getElementById("statusText");
-const statusChips = document.getElementById("statusChips");
-const turnText = document.getElementById("turnText");
-const modeText = document.getElementById("modeText");
-const connText = document.getElementById("connText");
-const moveLog = document.getElementById("moveLog");
+// --- DOM elements ---
 const boardEl = document.getElementById("board");
+const statusEl = document.getElementById("status");
 
-const btnStart = document.getElementById("btnStart");
-const btnSim = document.getElementById("btnSim");
-const btnSettings = document.getElementById("btnSettings");
-const btnPause = document.getElementById("btnPause");
-const btnResume = document.getElementById("btnResume");
-const btnReset = document.getElementById("btnReset");
+// --- State ---
+let selected = null;   // the square the player clicked first (e.g. "e2")
+let paused = false;    // when true, clicks are ignored
 
-const state = {
-  mode: "Not started",
-  turn: "-",
-  connection: "Offline",
-  tags: ["Idle"],
-  log: [],
-  activeSquares: [],
+// unicode chess pieces keyed by FEN character
+const PIECES = {
+  K: "\u2654", Q: "\u2655", R: "\u2656", B: "\u2657", N: "\u2658", P: "\u2659",
+  k: "\u265A", q: "\u265B", r: "\u265C", b: "\u265D", n: "\u265E", p: "\u265F",
 };
 
-// Unicode chess pieces for the start position
-const demoPieces = {
-  a1: "♖", b1: "♘", c1: "♗", d1: "♕", e1: "♔", f1: "♗", g1: "♘", h1: "♖",
-  a2: "♙", b2: "♙", c2: "♙", d2: "♙", e2: "♙", f2: "♙", g2: "♙", h2: "♙",
-  a7: "♟", b7: "♟", c7: "♟", d7: "♟", e7: "♟", f7: "♟", g7: "♟", h7: "♟",
-  a8: "♜", b8: "♞", c8: "♝", d8: "♛", e8: "♚", f8: "♝", g8: "♞", h8: "♜",
-};
 
-const squares = [];
-const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
+// --- Render ---
 
-function buildBoard() {
+function renderBoard(fen) {
+  // takes a FEN string like "rnbqkbnr/pppppppp/..." and draws the 8x8 grid
   boardEl.innerHTML = "";
-  squares.length = 0;
-  ranks.forEach((r, rIdx) => {
-    files.forEach((f, fIdx) => {
-      const id = f + r;
-      const sq = document.createElement("div");
-      sq.className = "square " + ((rIdx + fIdx) % 2 === 0 ? "light" : "dark");
-      sq.dataset.square = id;
-      sq.textContent = demoPieces[id] || "";
-      sq.addEventListener("click", () => handleSquareClick(id));
-      boardEl.appendChild(sq);
-      squares.push(sq);
-    });
-  });
+  const rows = fen.split(" ")[0].split("/");
+
+  for (let r = 0; r < 8; r++) {
+    let col = 0;
+    for (const ch of rows[r]) {
+      if (ch >= "1" && ch <= "8") {
+        // digit means that many empty squares
+        for (let i = 0; i < parseInt(ch); i++) {
+          addSquare(r, col, null);
+          col++;
+        }
+      } else {
+        // letter means a piece
+        addSquare(r, col, ch);
+        col++;
+      }
+    }
+  }
+}
+
+function addSquare(row, col, piece) {
+  // create one square on the board, attach a click handler
+  const files = "abcdefgh";
+  const name = files[col] + (8 - row);          // e.g. "e2"
+  const isLight = (row + col) % 2 === 0;
+
+  const sq = document.createElement("div");
+  sq.className = "square " + (isLight ? "light" : "dark");
+  sq.dataset.square = name;
+  sq.textContent = piece ? PIECES[piece] : "";
+  sq.addEventListener("click", () => handleClick(name));
+  boardEl.appendChild(sq);
 }
 
 function setStatus(text) {
-  statusText.textContent = text;
+  // update the status line above the board
+  statusEl.textContent = text;
 }
 
-function setTags(tags) {
-  statusChips.innerHTML = "";
-  tags.forEach((t) => {
-    const li = document.createElement("li");
-    li.className = "tag";
-    li.textContent = t;
-    statusChips.appendChild(li);
-  });
+function clearSelection() {
+  // remove the green highlight from all squares
+  selected = null;
+  document.querySelectorAll(".square.selected").forEach(s => s.classList.remove("selected"));
 }
 
-function appendLog(entry) {
-  state.log.push(entry);
-  moveLog.textContent = state.log.join("   ");
+function highlightSquare(name) {
+  // add the green highlight to one square
+  const sq = document.querySelector(`[data-square="${name}"]`);
+  if (sq) sq.classList.add("selected");
 }
 
-function setActiveSquares(list) {
-  squares.forEach((sq) => sq.classList.remove("active"));
-  list.forEach((id) => {
-    const sq = squares.find((s) => s.dataset.square === id);
-    if (sq) sq.classList.add("active");
-  });
-}
 
-function handleSquareClick(id) {
-  if (state.activeSquares.length === 0) {
-    state.activeSquares = [id];
-  } else if (state.activeSquares.length === 1) {
-    const from = state.activeSquares[0];
-    const to = id;
-    state.activeSquares = [];
-    handlePlayerMove(from, to);
+// --- Backend calls ---
+
+async function fetchState() {
+  // ask the server for the current board and redraw it
+  const res = await fetch("/state");
+  const data = await res.json();
+  renderBoard(data.fen);
+
+  if (data.game_over) {
+    setStatus("Game over: " + data.result);
   }
-  setActiveSquares(state.activeSquares);
+  return data;
 }
 
-function handlePlayerMove(from, to) {
-  appendLog(`Player: ${from}-${to}`);
-  setStatus("Move submitted (waiting on backend)");
-  state.turn = "Waiting";
-  state.tags = ["Pending backend"];
-  setTags(state.tags);
-  setActiveSquares([from, to]);
-  updateTop();
+async function sendMove(from, to) {
+  // send the player's move to the server, then ask the AI to respond
+  setStatus("Sending move...");
+  const uci = from + to;
+  const res = await fetch("/move?uci=" + uci);
+  const data = await res.json();
+
+  if (!data.ok) {
+    setStatus("Illegal move, try again");
+    return;
+  }
+
+  // refresh the board after the player's move
+  const state = await fetchState();
+  if (state.game_over) return;
+
+  // now let the AI play
+  setStatus("AI is thinking...");
+  await fetch("/ai");
+  await fetchState();
+
+  if (!paused) setStatus("Your turn");
 }
 
-function updateTop() {
-  turnText.textContent = state.turn;
-  modeText.textContent = state.mode;
-  connText.textContent = state.connection;
+
+// --- Click handling ---
+
+function handleClick(name) {
+  // two-click system: first click selects a piece, second click picks the destination
+  if (paused) return;
+
+  if (!selected) {
+    // first click: select the piece
+    selected = name;
+    highlightSquare(name);
+  } else {
+    // second click: try to move from selected -> name
+    const from = selected;
+    clearSelection();
+    sendMove(from, name);
+  }
 }
 
-btnStart.addEventListener("click", () => {
-  state.mode = "Live";
-  state.turn = "Player";
-  state.connection = "Local";
-  state.tags = ["Ready"];
-  state.log = [];
-  moveLog.textContent = "No moves yet.";
-  setStatus("Your turn");
-  setTags(state.tags);
-  setActiveSquares([]);
-  updateTop();
-});
 
-btnSim.addEventListener("click", () => {
-  state.mode = "Simulation";
-  state.connection = "Local";
-  setStatus("Simulation ready");
-  setTags(["Sim", "Ready"]);
-  updateTop();
-});
+// --- Buttons ---
 
-btnSettings.addEventListener("click", () => {
-  setStatus("Settings: coming soon");
-});
-
-btnPause.addEventListener("click", () => {
+document.getElementById("btnPause").addEventListener("click", () => {
+  // pause the game so clicks are ignored
+  paused = true;
+  clearSelection();
   setStatus("Paused");
-  state.tags = ["Paused"];
-  setTags(state.tags);
 });
 
-btnResume.addEventListener("click", () => {
-  setStatus("Resumed");
-  state.tags = ["Ready"];
-  setTags(state.tags);
+document.getElementById("btnResume").addEventListener("click", () => {
+  // resume the game so clicks work again
+  paused = false;
+  setStatus("Your turn");
 });
 
-btnReset.addEventListener("click", () => {
-  setStatus("Reset");
-  state.tags = ["Idle"];
-  state.turn = "-";
-  state.mode = "Not started";
-  state.connection = "Offline";
-  state.log = [];
-  moveLog.textContent = "No moves yet.";
-  setTags(state.tags);
-  setActiveSquares([]);
-  updateTop();
-  buildBoard();
+document.getElementById("btnReset").addEventListener("click", async () => {
+  // start a fresh game
+  paused = false;
+  clearSelection();
+  await fetch("/reset");
+  await fetchState();
+  setStatus("Your turn");
 });
 
-buildBoard();
-updateTop();
+
+// --- Start ---
+fetchState();

@@ -28,42 +28,56 @@ class MCTSNode:
     def ucb(self, c=1.4):
         if self.visits == 0:
             return float('inf')
-        exploit = self.q()
-        explore = c * self.prior * np.sqrt(self.parent.visits) / (1 + self.visits)
-        return exploit + explore
+        return self.q() + c * self.prior * np.sqrt(self.parent.visits) / (1 + self.visits)
 
     def best_child(self):
-        return max(self.children.values(), key=lambda n: n.ucb())
+        # pick the child with the highest UCB score
+        best = None
+        best_score = -1
+        for child in self.children.values():
+            score = child.ucb()
+            if score > best_score:
+                best_score = score
+                best = child
+        return best
 
     def expand(self, policy):
+        # get what the neural network thinks about each legal move
         moves = list(self.board.legal_moves)
 
-        priors = [policy[move_to_index(m)] for m in moves]
+        priors = []
+        for m in moves:
+            priors.append(policy[move_to_index(m)])
+
+        # normalize so they add up to 1 (or equal if all zero)
         total = sum(priors)
-
         if total > 0:
-            priors = [p / total for p in priors]
+            for i in range(len(priors)):
+                priors[i] = priors[i] / total
         else:
-            priors = [1.0 / len(moves)] * len(moves)
+            even = 1.0 / len(moves)
+            priors = [even] * len(moves)
 
-        for m, p in zip(moves, priors):
-            child_board = self.board.copy()
-            child_board.push(m)
-            self.children[m] = MCTSNode(child_board, parent=self, move=m, prior=p)
+        # create a child node for each legal move
+        for i in range(len(moves)):
+            new_board = self.board.copy()
+            new_board.push(moves[i])
+            self.children[moves[i]] = MCTSNode(new_board, parent=self, move=moves[i], prior=priors[i])
 
     def backprop(self, value):
-        self.visits += 1
-        self.value_sum += value
-        if self.parent:
-            self.parent.backprop(-value)  # flip for opponent
+        node = self
+        while node is not None:
+            node.visits += 1
+            node.value_sum += value
+            value = -value  # flip for opponent
+            node = node.parent
 
 
 class MCTS:
 
-    def __init__(self, model, n_sims=100, c=1.4):
+    def __init__(self, model, n_sims=100):
         self.model = model
         self.n_sims = n_sims
-        self.c = c
 
     def search(self, board):
         root = MCTSNode(board)
@@ -77,27 +91,39 @@ class MCTS:
 
             # evaluation
             if node.is_terminal():
+                # figure out who won (turn belongs to the side that CAN'T move)
                 result = node.board.result()
                 if result == '1-0':
-                    val = 1.0 if node.board.turn == chess.BLACK else -1.0
+                    # white won
+                    if node.board.turn == chess.BLACK:
+                        val = 1.0
+                    else:
+                        val = -1.0
                 elif result == '0-1':
-                    val = -1.0 if node.board.turn == chess.BLACK else 1.0
+                    # black won
+                    if node.board.turn == chess.BLACK:
+                        val = -1.0
+                    else:
+                        val = 1.0
                 else:
                     val = 0
             else:
                 state = board_to_tensor(node.board)
-                policy, val = self.model.predict(state, verbose=0)
+                policy, val = self.model.predict(state)
                 policy = policy[0]
                 val = val[0][0]
+                node.expand(policy)
 
-                if node.is_leaf():
-                    node.expand(policy)
-
-            # backprop
             node.backprop(val)
 
+        # count how many times each move was visited during search
         moves = list(board.legal_moves)
-        visits = [root.children[m].visits if m in root.children else 0 for m in moves]
+        visits = []
+        for m in moves:
+            if m in root.children:
+                visits.append(root.children[m].visits)
+            else:
+                visits.append(0)
         return moves, visits
 
     def get_move_probs(self, board, temperature=1.0):
@@ -110,9 +136,13 @@ class MCTS:
             probs = [0.0] * len(moves)
             probs[best] = 1.0
         else:
+            # raise visit counts by 1/temperature to control randomness
             counts = np.array(visits, dtype=np.float32)
             counts = counts ** (1.0 / temperature)
             total = np.sum(counts)
-            probs = counts / total if total > 0 else np.ones(len(moves)) / len(moves)
+            if total > 0:
+                probs = counts / total
+            else:
+                probs = np.ones(len(moves)) / len(moves)
 
         return moves, probs

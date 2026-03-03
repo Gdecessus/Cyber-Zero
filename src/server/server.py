@@ -1,80 +1,106 @@
-import json
 import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import urlparse, parse_qs
-from src.ai_engine.play import ChessGame
+import numpy as np
+import chess
+from flask import Flask, jsonify, request, send_from_directory
+from src.ai_engine.model import ChessModel
+from src.ai_engine.mcts import MCTS
 
-game = ChessGame()
+
+class ChessGame:
+    def __init__(self, model_path="best_model.keras", n_sims=200):
+        if model_path and os.path.exists(model_path):
+            self.model = ChessModel.load(model_path)
+        else:
+            self.model = ChessModel()
+
+        self.mcts = MCTS(self.model, n_sims)
+        self.board = chess.Board()
+    
+    def reset(self):
+        self.board.reset()
+
+    def get_state(self):
+        """Return everything the frontend needs to draw the board."""
+        game_over = self.board.is_game_over()
+
+        # convert move objects to simple strings like "e2e4"
+        moves = []
+        for m in self.board.legal_moves:
+            moves.append(m.uci())
+
+        # only look up the result if the game is actually over
+        result = None
+        if game_over:
+            result = self.board.result()
+
+        return {
+            "fen": self.board.fen(),
+            # board.turn is True for white, False for black
+            "turn": "w" if self.board.turn == chess.WHITE else "b",
+            "legal_moves": moves,
+            "game_over": game_over,
+            "result": result,
+        }
+
+    def apply_move(self, move_uci):
+        try:
+            move = chess.Move.from_uci(move_uci)
+        except ValueError:
+            return {"ok": False, "error": "invalid_format"}
+
+        if move not in self.board.legal_moves:
+            return {"ok": False, "error": "illegal_move"}
+
+        self.board.push(move)
+        return {"ok": True, "move": move.uci()}
+
+    def play_ai_move(self):
+        moves, probs = self.mcts.get_move_probs(self.board, temperature=0.1)
+        if not moves:
+            return None
+        move = moves[np.argmax(probs)]
+        self.board.push(move)
+        return move.uci()
+
+
+# FLASK SERVER BELOW
+
 UI_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "UI_chess")
+app = Flask(__name__, static_folder=UI_DIR)
+game = ChessGame()
 
-MIME_TYPES = {".html": "text/html", ".css": "text/css", ".js": "application/javascript"}
+
+@app.route("/")
+def index():
+    return send_from_directory(UI_DIR, "index.html")
 
 
-class ChessHandler(BaseHTTPRequestHandler):
+@app.route("/<path:filename>")
+def static_files(filename):
+    return send_from_directory(UI_DIR, filename)
 
-    def _json(self, data, status=200):
-        body = json.dumps(data).encode()
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(body)
 
-    def do_OPTIONS(self):
-        self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.end_headers()
+@app.route("/state")
+def state():
+    return jsonify(game.get_state())
 
-    def do_GET(self):
-        path = urlparse(self.path).path
 
-        if path == "/state":
-            return self._json(game.get_state())
-        if path == "/ai":
-            return self._json({"ok": True, "ai": game.play_ai_move()})
-        if path == "/reset":
-            game.reset()
-            return self._json({"ok": True})
-        if path == "/move":
-            uci = parse_qs(urlparse(self.path).query).get("uci", [""])[0]
-            res = game.apply_move(uci)
-            return self._json(res, 200 if res.get("ok") else 400)
+@app.route("/move")
+def move():
+    uci = request.args.get("uci", "")
+    return jsonify(game.apply_move(uci))
 
-        # serve UI
-        if path == "/":
-            return self._serve_file("index.html")
 
-        rel = path.lstrip("/")
-        if rel:
-            return self._serve_file(rel)
+@app.route("/ai")
+def ai():
+    return jsonify({"move": game.play_ai_move()})
 
-        return self._json({"error": "not_found"}, 404)
 
-    def _serve_file(self, rel_path):
-        fpath = os.path.join(UI_DIR, rel_path)
-        if not os.path.isfile(fpath):
-            return self._json({"error": "not_found"}, 404)
-
-        with open(fpath, "rb") as f:
-            data = f.read()
-
-        ext = os.path.splitext(fpath)[1]
-        ctype = MIME_TYPES.get(ext, "application/octet-stream")
-
-        self.send_response(200)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
-
-    def log_message(self, fmt, *args):
-        pass
-
+@app.route("/reset")
+def reset():
+    game.reset()
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", 8000), ChessHandler)
-    print("Server running on http://localhost:8000")
-    server.serve_forever()
+    print("Server ON")
+    app.run(host="0.0.0.0", port=8000)

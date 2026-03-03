@@ -15,15 +15,11 @@ class ChessModel:
 
     def _res_block(self, x):
         shortcut = x
-
         x = Conv2D(self.filters, 3, padding='same', use_bias=False)(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
-
         x = Conv2D(self.filters, 3, padding='same', use_bias=False)(x)
         x = BatchNormalization()(x)
-
-        # skip connection
         x = Add()([shortcut, x])
         x = Activation('relu')(x)
         return x
@@ -31,7 +27,6 @@ class ChessModel:
     def _build(self):
         inp = Input(shape=(8, 8, 13), name='board_input')
 
-        # initial conv
         x = Conv2D(self.filters, 3, padding='same', use_bias=False)(inp)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
@@ -40,22 +35,21 @@ class ChessModel:
             x = self._res_block(x)
 
         # policy head
-        policy = Conv2D(2, 1, padding='same', use_bias=False)(x)
-        policy = BatchNormalization()(policy)
-        policy = Activation('relu')(policy)
-        policy = Flatten()(policy)
-        policy = Dense(4672, activation='softmax', name='policy')(policy)
+        p = Conv2D(2, 1, padding='same', use_bias=False)(x)
+        p = BatchNormalization()(p)
+        p = Activation('relu')(p)
+        p = Flatten()(p)
+        p = Dense(4672, activation='softmax', name='policy')(p)
 
         # value head
-        value = Conv2D(1, 1, padding='same', use_bias=False)(x)
-        value = BatchNormalization()(value)
-        value = Activation('relu')(value)
-        value = Flatten()(value)
-        value = Dense(128, activation='relu')(value)
-        value = Dense(1, activation='tanh', name='value')(value)
+        v = Conv2D(1, 1, padding='same', use_bias=False)(x)
+        v = BatchNormalization()(v)
+        v = Activation('relu')(v)
+        v = Flatten()(v)
+        v = Dense(128, activation='relu')(v)
+        v = Dense(1, activation='tanh', name='value')(v)
 
-        model = Model(inputs=inp, outputs=[policy, value])
-
+        model = Model(inputs=inp, outputs=[p, v])
         model.compile(
             optimizer=Adam(learning_rate=self.lr),
             loss={'policy': 'categorical_crossentropy', 'value': 'mse'},
@@ -63,17 +57,19 @@ class ChessModel:
         )
         return model
 
-    def predict(self, state, verbose=0):
-        return self.model.predict(state, verbose=verbose)
+    def predict(self, state):
+        return self.model.predict(state, verbose=0)
 
-    def train(self, X, y, epochs=1, batch_size=32, verbose=1):
-        return self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=verbose)
+    def train(self, X, y, epochs=1, batch_size=32):
+        return self.model.fit(X, y, epochs=epochs, batch_size=batch_size)
 
     def save(self, path):
         self.model.save(path)
 
     @staticmethod
     def load(path):
-        m = ChessModel()
-        m.model = keras.models.load_model(path)
-        return m
+        """Load a saved model from disk without rebuilding it."""
+        # create an empty ChessModel shell (skip __init__ since we don't need to build)
+        loaded = ChessModel.__new__(ChessModel)
+        loaded.model = keras.models.load_model(path)
+        return loaded
