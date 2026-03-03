@@ -6,15 +6,13 @@ from src.ai_engine.mcts import MCTS
 
 
 class ChessGame:
-    """Interface between the HTTP server and the AI engine."""
 
     def __init__(self, model_path="best_model.keras", n_sims=200):
         if model_path and os.path.exists(model_path):
             self.model = ChessModel.load(model_path)
-            print(f"Loaded model from {model_path}")
         else:
             self.model = ChessModel()
-            print("No saved model found, using fresh network")
+
         self.mcts = MCTS(self.model, n_sims)
         self.board = chess.Board()
 
@@ -25,7 +23,6 @@ class ChessGame:
         game_over = self.board.is_game_over()
         result = self.board.result() if game_over else None
 
-        # figure out why the game ended
         end_reason = None
         if self.board.is_checkmate():
             end_reason = "checkmate"
@@ -34,7 +31,7 @@ class ChessGame:
         elif self.board.is_insufficient_material():
             end_reason = "insufficient_material"
         elif game_over:
-            end_reason = "draw"  # covers 75-move, fivefold rep, etc
+            end_reason = "draw"
 
         return {
             "fen": self.board.fen(),
@@ -62,8 +59,6 @@ class ChessGame:
         if not moves:
             return None
 
-        best = np.argmax(probs)
-        move = moves[best]
+        move = moves[np.argmax(probs)]
         self.board.push(move)
-
         return {"move": move.uci()}

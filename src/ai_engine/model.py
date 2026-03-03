@@ -6,6 +6,7 @@ from tensorflow.keras.optimizers import Adam
 
 
 class ChessModel:
+
     def __init__(self, lr=0.002, num_res_blocks=4, filters=64):
         self.lr = lr
         self.num_res_blocks = num_res_blocks
@@ -13,24 +14,24 @@ class ChessModel:
         self.model = self._build()
 
     def _res_block(self, x):
-        # skip connection - keeps gradients flowing through deep networks
         shortcut = x
 
-        x = Conv2D(self.filters, 3, padding='same', use_bias=False)(x)  # BN handles bias
+        x = Conv2D(self.filters, 3, padding='same', use_bias=False)(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
 
         x = Conv2D(self.filters, 3, padding='same', use_bias=False)(x)
         x = BatchNormalization()(x)
 
+        # skip connection
         x = Add()([shortcut, x])
         x = Activation('relu')(x)
         return x
 
     def _build(self):
-        # 8x8 board, 12 piece channels + 1 turn channel
         inp = Input(shape=(8, 8, 13), name='board_input')
 
+        # initial conv
         x = Conv2D(self.filters, 3, padding='same', use_bias=False)(inp)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
@@ -38,14 +39,14 @@ class ChessModel:
         for _ in range(self.num_res_blocks):
             x = self._res_block(x)
 
-        # policy head - prob distribution over all possible moves
+        # policy head
         policy = Conv2D(2, 1, padding='same', use_bias=False)(x)
         policy = BatchNormalization()(policy)
         policy = Activation('relu')(policy)
         policy = Flatten()(policy)
         policy = Dense(4672, activation='softmax', name='policy')(policy)
 
-        # value head - how good is this position, squeezed to [-1, 1]
+        # value head
         value = Conv2D(1, 1, padding='same', use_bias=False)(x)
         value = BatchNormalization()(value)
         value = Activation('relu')(value)
@@ -54,6 +55,7 @@ class ChessModel:
         value = Dense(1, activation='tanh', name='value')(value)
 
         model = Model(inputs=inp, outputs=[policy, value])
+
         model.compile(
             optimizer=Adam(learning_rate=self.lr),
             loss={'policy': 'categorical_crossentropy', 'value': 'mse'},
@@ -72,7 +74,6 @@ class ChessModel:
 
     @staticmethod
     def load(path):
-        """Load a previously saved model."""
         m = ChessModel()
         m.model = keras.models.load_model(path)
         return m

@@ -4,6 +4,7 @@ from src.utils.utils import move_to_index, board_to_tensor
 
 
 class MCTSNode:
+
     def __init__(self, board, parent=None, move=None, prior=1.0):
         self.board = board.copy()
         self.parent = parent
@@ -21,11 +22,10 @@ class MCTSNode:
 
     def q(self):
         if self.visits == 0:
-            return 0  # avoid div by zero
+            return 0
         return self.value_sum / self.visits
 
     def ucb(self, c=1.4):
-        # unvisited nodes always get explored first
         if self.visits == 0:
             return float('inf')
         exploit = self.q()
@@ -36,17 +36,14 @@ class MCTSNode:
         return max(self.children.values(), key=lambda n: n.ucb())
 
     def expand(self, policy):
-        """Create child nodes for all legal moves, weighted by policy network."""
         moves = list(self.board.legal_moves)
 
-        # grab prior prob for each legal move from the network output
         priors = [policy[move_to_index(m)] for m in moves]
         total = sum(priors)
 
         if total > 0:
             priors = [p / total for p in priors]
         else:
-            # network gave us nothing, just use uniform
             priors = [1.0 / len(moves)] * len(moves)
 
         for m, p in zip(moves, priors):
@@ -57,12 +54,12 @@ class MCTSNode:
     def backprop(self, value):
         self.visits += 1
         self.value_sum += value
-        # flip sign going up the tree (opponent's perspective)
         if self.parent:
-            self.parent.backprop(-value)
+            self.parent.backprop(-value)  # flip for opponent
 
 
 class MCTS:
+
     def __init__(self, model, n_sims=100, c=1.4):
         self.model = model
         self.n_sims = n_sims
@@ -74,11 +71,11 @@ class MCTS:
         for _ in range(self.n_sims):
             node = root
 
-            # 1) selection - walk down tree picking best UCB child
+            # selection
             while not node.is_leaf() and not node.is_terminal():
                 node = node.best_child()
 
-            # 2) evaluation
+            # evaluation
             if node.is_terminal():
                 result = node.board.result()
                 if result == '1-0':
@@ -88,19 +85,17 @@ class MCTS:
                 else:
                     val = 0
             else:
-                # ask the neural network
                 state = board_to_tensor(node.board)
                 policy, val = self.model.predict(state, verbose=0)
-                policy = policy[0]  # remove batch dim
+                policy = policy[0]
                 val = val[0][0]
 
                 if node.is_leaf():
                     node.expand(policy)
 
-            # 3) backpropagate result up the tree
+            # backprop
             node.backprop(val)
 
-        # collect visit counts for each legal move at the root
         moves = list(board.legal_moves)
         visits = [root.children[m].visits if m in root.children else 0 for m in moves]
         return moves, visits
@@ -111,7 +106,6 @@ class MCTS:
             return [], []
 
         if temperature == 0:
-            # greedy - just pick the most visited move
             best = np.argmax(visits)
             probs = [0.0] * len(moves)
             probs[best] = 1.0

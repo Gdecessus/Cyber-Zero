@@ -4,23 +4,16 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 from src.ai_engine.play import ChessGame
 
-
 game = ChessGame()
-
-# UI files live two levels up from this script
 UI_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "UI_chess")
 
-MIME_TYPES = {
-    ".html": "text/html",
-    ".css": "text/css",
-    ".js": "application/javascript",
-}
+MIME_TYPES = {".html": "text/html", ".css": "text/css", ".js": "application/javascript"}
 
 
 class ChessHandler(BaseHTTPRequestHandler):
 
-    def _json_response(self, data, status=200):
-        body = json.dumps(data).encode("utf-8")
+    def _json(self, data, status=200):
+        body = json.dumps(data).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
@@ -29,7 +22,6 @@ class ChessHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_OPTIONS(self):
-        # CORS preflight
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -40,59 +32,49 @@ class ChessHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
 
         if path == "/state":
-            return self._json_response(game.get_state())
-
+            return self._json(game.get_state())
         if path == "/ai":
-            return self._json_response({"ok": True, "ai": game.play_ai_move()})
-
+            return self._json({"ok": True, "ai": game.play_ai_move()})
         if path == "/reset":
             game.reset()
-            return self._json_response({"ok": True})
-
+            return self._json({"ok": True})
         if path == "/move":
-            params = parse_qs(urlparse(self.path).query)
-            uci = params.get("uci", [""])[0]
-            result = game.apply_move(uci)
-            return self._json_response(result, 200 if result.get("ok") else 400)
+            uci = parse_qs(urlparse(self.path).query).get("uci", [""])[0]
+            res = game.apply_move(uci)
+            return self._json(res, 200 if res.get("ok") else 400)
 
-        # serve UI files
+        # serve UI
         if path == "/":
             return self._serve_file("index.html")
 
-        # try to serve whatever file was requested
         rel = path.lstrip("/")
         if rel:
             return self._serve_file(rel)
 
-        return self._json_response({"error": "not_found"}, 404)
-
-    def log_message(self, fmt, *args):
-        pass  # suppress default request logging, it's noisy
+        return self._json({"error": "not_found"}, 404)
 
     def _serve_file(self, rel_path):
         fpath = os.path.join(UI_DIR, rel_path)
         if not os.path.isfile(fpath):
-            return self._json_response({"error": "not_found"}, 404)
+            return self._json({"error": "not_found"}, 404)
 
         with open(fpath, "rb") as f:
             data = f.read()
 
         ext = os.path.splitext(fpath)[1]
-        content_type = MIME_TYPES.get(ext, "application/octet-stream")
+        ctype = MIME_TYPES.get(ext, "application/octet-stream")
 
         self.send_response(200)
-        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
 
-
-def main():
-    port = 8000
-    server = HTTPServer(("0.0.0.0", port), ChessHandler)
-    print(f"Chess server running on http://localhost:{port}")
-    server.serve_forever()
+    def log_message(self, fmt, *args):
+        pass
 
 
 if __name__ == "__main__":
-    main()
+    server = HTTPServer(("0.0.0.0", 8000), ChessHandler)
+    print("Server running on http://localhost:8000")
+    server.serve_forever()
