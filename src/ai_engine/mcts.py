@@ -116,7 +116,6 @@ class MCTS:
 
             node.backprop(val)
 
-        # count how many times each move was visited during search
         moves = list(board.legal_moves)
         visits = []
         for m in moves:
@@ -136,7 +135,6 @@ class MCTS:
             probs = [0.0] * len(moves)
             probs[best] = 1.0
         else:
-            # raise visit counts by 1/temperature to control randomness
             counts = np.array(visits, dtype=np.float32)
             counts = counts ** (1.0 / temperature)
             total = np.sum(counts)

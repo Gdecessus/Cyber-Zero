@@ -68,8 +68,6 @@ class ChessModel:
 
     @staticmethod
     def load(path):
-        """Load a saved model from disk without rebuilding it."""
-        # create an empty ChessModel shell (skip __init__ since we don't need to build)
         loaded = ChessModel.__new__(ChessModel)
         loaded.model = keras.models.load_model(path)
         return loaded
