@@ -1,4 +1,5 @@
 import os
+import random
 import numpy as np
 import chess
 from src.ai_engine.model import ChessModel
@@ -7,27 +8,33 @@ from src.utils.utils import board_to_tensor, create_policy_vector
 
 
 def play_game(mcts, max_moves=120, temp_threshold=10):
+    # play one full game of self-play, return training data
     board = chess.Board()
     history = []
 
     for move_num in range(max_moves):
         state = board_to_tensor(board)[0]
 
-        # explore early moves, exploit later ones
+        # explore early, exploit later
         if move_num < temp_threshold:
             temp = 1.0
         else:
             temp = 0.1
+
         moves, probs = mcts.get_move_probs(board, temp)
         if not moves:
             break
 
         history.append((state, create_policy_vector(moves, probs)))
 
+        # pick a move — random early on, best move later
         if temp > 0.5:
-            idx = np.random.choice(len(moves), p=probs)
+            idx = random.choices(range(len(moves)), weights=probs)[0]
         else:
-            idx = np.argmax(probs)
+            idx = 0
+            for i in range(len(probs)):
+                if probs[i] > probs[idx]:
+                    idx = i
 
         board.push(moves[idx])
         if board.is_game_over():
@@ -37,25 +44,24 @@ def play_game(mcts, max_moves=120, temp_threshold=10):
 
 
 def _label_outcomes(history, result):
-    # convert the game result string to a number
+    # turn result string into a number
     if result == '1-0':
-        outcome = 1.0      # white won
+        outcome = 1.0
     elif result == '0-1':
-        outcome = -1.0     # black won
+        outcome = -1.0
     else:
-        outcome = 0.0      # draw
+        outcome = 0.0
 
     states = []
     policies = []
     values = []
-    for state, policy in history:
-        # channel 12 tells us whose turn it was (1.0 = white)
-        was_white = state[0, 0, 12] == 1.0
 
+    for state, policy in history:
         states.append(state)
         policies.append(policy)
 
-        # white gets +outcome, black gets -outcome
+        # channel 12 = whose turn (1.0 = white)
+        was_white = state[0, 0, 12] == 1.0
         if was_white:
             values.append(outcome)
         else:
@@ -65,74 +71,72 @@ def _label_outcomes(history, result):
 
 
 def generate_data(model, n_games, n_sims=50):
-    """Play n_games of self-play and combine all the training data."""
+    # play n_games of self-play, combine all training data
     mcts = MCTS(model, n_sims)
 
-    # play each game and collect the results
-    game_data = []
+    all_states = []
+    all_policies = []
+    all_values = []
+    all_results = []
+
     for _ in range(n_games):
-        game_data.append(play_game(mcts))
+        states, policies, values, result = play_game(mcts)
+        all_states.append(states)
+        all_policies.append(policies)
+        all_values.append(values)
+        all_results.append(result)
 
-    # separate into lists by type
-    states = []
-    policies = []
-    values = []
-    results = []
-    for g in game_data:
-        states.append(g[0])
-        policies.append(g[1])
-        values.append(g[2])
-        results.append(g[3])
+    if len(all_states) == 0 or len(all_states[0]) == 0:
+        return np.array([]), np.array([]), np.array([]), all_results
 
-    # if no data was generated, return empty arrays
-    if len(states) == 0 or len(states[0]) == 0:
-        return np.array([]), np.array([]), np.array([]), results
-
-    # stack all the games into single arrays
-    return np.concatenate(states), np.concatenate(policies), np.concatenate(values), results
+    return np.concatenate(all_states), np.concatenate(all_policies), np.concatenate(all_values), all_results
 
 
-def evaluate_models(current, best, n_games=10, n_sims=100):
-    mcts1 = MCTS(current, n_sims)
-    mcts2 = MCTS(best, n_sims)
+def evaluate_models(current_model, best_model, n_games=10, n_sims=100):
+    # play n_games between two models, return win rate for current_model
+    current_mcts = MCTS(current_model, n_sims)
+    best_mcts = MCTS(best_model, n_sims)
 
     score = 0.0
     for i in range(n_games):
-        model1_white = (i % 2 == 0)
+        # alternate who plays white
+        current_is_white = (i % 2 == 0)
         board = chess.Board()
 
         for _ in range(120):
-            # pick which MCTS to use based on whose turn it is
+            # pick which mcts to use for this turn
             if board.turn == chess.WHITE:
-                if model1_white:
-                    mcts = mcts1
+                if current_is_white:
+                    mcts = current_mcts
                 else:
-                    mcts = mcts2
+                    mcts = best_mcts
             else:
-                if model1_white:
-                    mcts = mcts2
+                if current_is_white:
+                    mcts = best_mcts
                 else:
-                    mcts = mcts1
+                    mcts = current_mcts
 
             moves, probs = mcts.get_move_probs(board, temperature=0.1)
             if not moves:
                 break
 
-            board.push(moves[np.argmax(probs)])
+            # pick the best move
+            best_idx = 0
+            for j in range(len(probs)):
+                if probs[j] > probs[best_idx]:
+                    best_idx = j
+            board.push(moves[best_idx])
+
             if board.is_game_over():
                 break
 
-        # score: 1 point for a win, 0.5 for draw, 0 for loss
+        # 1 point for win, 0.5 for draw, 0 for loss
         result = board.result()
         if result == "1-0":
-            if model1_white:
+            if current_is_white:
                 score += 1.0
-            else:
-                score += 0.0
         elif result == "0-1":
-            if model1_white:
-                score += 0.0
-            else:
+            if not current_is_white:
                 score += 1.0
         else:
             score += 0.5

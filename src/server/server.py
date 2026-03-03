@@ -20,7 +20,7 @@ class ChessGame:
         self.board.reset()
 
     def get_state(self):
-        """Return everything the frontend needs to draw the board."""
+        # return everything the frontend needs to draw the board
         game_over = self.board.is_game_over()
 
         # convert move objects to simple strings like "e2e4"

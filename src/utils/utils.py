@@ -12,23 +12,17 @@ PIECE_CHANNEL = {
 
 
 def move_to_index(move):
-    """
-    Encode a chess move as an index into the 4672-length policy vector.
-    Normal moves: from_sq * 64 + to_sq  (0..4095)
-    Promotions:   4096 + from_sq * 4 + promo_type  (4096..4351)
-    """
+    # encode a chess move as an index into the 4672-length policy vector
+    # normal moves: from_sq * 64 + to_sq  (0..4095)
+    # promotions:   4096 + from_sq * 4 + promo_type  (4096..4351)
     if move.promotion:
         return 4096 + move.from_square * 4 + PROMO_INDEX[move.promotion]
     return move.from_square * 64 + move.to_square
 
 
 def board_to_tensor(board):
-    """
-    Convert board to 8x8x13 tensor.
-    Channels 0-5:  black pieces (p, n, b, r, q, k)
-    Channels 6-11: white pieces (P, N, B, R, Q, K)
-    Channel 12:    whose turn (1.0 = white, 0.0 = black)
-    """
+    # convert board to 8x8x13 tensor
+    # channels 0-5: black pieces, 6-11: white pieces, 12: whose turn
     tensor = np.zeros((8, 8, 13), dtype=np.float32)
 
     for sq in chess.SQUARES:
@@ -42,7 +36,7 @@ def board_to_tensor(board):
 
 
 def create_policy_vector(moves, probs):
-    """Map move probabilities into a full 4672-length policy vector."""
+    # map move probabilities into a full 4672-length policy vector
     policy = np.zeros(4672, dtype=np.float32)
     for move, prob in zip(moves, probs):
         policy[move_to_index(move)] = prob
