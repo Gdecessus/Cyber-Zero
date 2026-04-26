@@ -86,9 +86,11 @@ class MCTS:
     def __init__(self, model, n_sims=100):
         self.model = model
         self.n_sims = n_sims
+        self.root = None
 
     def search(self, board):
-        root = MCTSNode(board)
+        self.root = MCTSNode(board)
+        root = self.root
 
         for _ in range(self.n_sims):
 
