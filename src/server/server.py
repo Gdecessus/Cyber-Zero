@@ -15,7 +15,7 @@ class ChessGame:
 
         self.mcts = MCTS(self.model, n_sims)
         self.board = chess.Board()
-    
+
     def reset(self):
         self.board.reset()
 
@@ -101,6 +101,68 @@ def reset():
     game.reset()
     return jsonify({"ok": True})
 
+
+@app.route("/history")
+def history():
+    moves = []
+    for m in game.board.move_stack:
+        moves.append(m.uci())
+
+    if len(moves) == 0:
+        return '<div class="empty">No moves yet</div>'
+
+    # group as pairs (white move, black move) per turn
+    html = ""
+    move_num = 1
+    for i in range(0, len(moves), 2):
+        white_move = moves[i]
+        if i + 1 < len(moves):
+            black_move = moves[i + 1]
+        else:
+            black_move = ""
+
+        html = html + '<div class="hist-row">'
+        html = html +   '<span class="hist-num">' + str(move_num) + '.</span>'
+        html = html +   '<span class="hist-w">' + white_move + '</span>'
+        html = html +   '<span class="hist-b">' + black_move + '</span>'
+        html = html + '</div>'
+        move_num = move_num + 1
+
+    return html
+
+
+@app.route("/thinking")
+def thinking():
+    if game.mcts.root is None:
+        return "..."
+
+    # collect (visits, uci) pairs
+    pairs = []
+    for move in game.mcts.root.children:
+        visits = game.mcts.root.children[move].visits
+        pairs.append((visits, move.uci()))
+
+    # sort biggest first
+    pairs.sort()
+    pairs.reverse()
+
+    # build HTML for top 10
+    html = ""
+    for i in range(10):
+        if i >= len(pairs):
+            break
+        visits = pairs[i][0]
+        uci = pairs[i][1]
+        bar = "█" * visits
+
+        if i == 0:
+            html = html + '<div class="top-move">' + uci + " " + bar + " " + str(visits) + '</div>'
+        else:
+            html = html + '<div>' + uci + " " + bar + " " + str(visits) + '</div>'
+
+    return html
+
+
 if __name__ == "__main__":
     print("Server ON")
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, threaded=True)
