@@ -4,19 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CyberZero</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="vendor/chessboard.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app">
-    <h1>CyberZero</h1>
-    <div id="status">Your turn</div>
-    <div class="board" id="board"></div>
-    <div class="buttons">
+
+    <header>
+      <div class="brand">
+        <div class="title">CyberZero</div>
+        <div class="subtitle">AI chess engine + robotic arm</div>
+      </div>
+      <div id="status" class="status-pill">Your turn</div>
+    </header>
+
+    <main>
+      <div id="board"></div>
+
+      <aside class="sidebar">
+        <div class="panel panel-ai">
+          <h3>AI Analysis</h3>
+          <div id="ai-panel"></div>
+        </div>
+        <div class="panel panel-history">
+          <h3>Game History</h3>
+          <div id="history-panel"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="buttons">
       <button id="btnPause">Pause</button>
       <button id="btnResume">Resume</button>
-      <button id="btnReset">Reset</button>
-    </div>
+      <button id="btnReset">New Game</button>
+    </footer>
+
   </div>
+
+  <script src="vendor/jquery.min.js"></script>
+  <script src="vendor/chessboard.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

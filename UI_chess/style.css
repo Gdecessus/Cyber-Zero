@@ -1,76 +1,175 @@
-* { box-sizing: border-box; margin: 0; }
+/* ============================================================
+   CyberZero — UI styles for 1920x1200 touchscreen
+   Library handles the chess board itself (chessboard.js).
+   We style: layout, header, AI panel, buttons.
+   ============================================================ */
 
-body {
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: #0f1116;
-  color: #e9ecf3;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #1c1814;
+  color: #e9e1d2;
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
 }
 
 .app {
-  padding: 24px;
-  text-align: center;
-}
-
-h1 {
-  margin-bottom: 8px;
-}
-
-#status {
-  margin-bottom: 12px;
-  color: #9aa0af;
-  font-weight: 600;
-}
-
-/* --- Board --- */
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  width: 480px;
-  height: 480px;
-  border-radius: 8px;
-  overflow: hidden;
+  height: 100%;
+  max-width: 1700px;
   margin: 0 auto;
+  padding: 24px 36px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 22px;
 }
 
-.square {
+/* ----- Header ----- */
+header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #3a302a;
+}
+.brand .title {
   font-size: 32px;
-  cursor: pointer;
-  user-select: none;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #f3e9d2;
+}
+.brand .subtitle {
+  font-size: 14px;
+  color: #b89a73;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+.status-pill {
+  background: rgba(200, 155, 60, 0.12);
+  border: 1px solid #c89b3c;
+  color: #f3e9d2;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-.square.light { background: #1c2432; }
-.square.dark  { background: #111824; }
-
-.square.selected {
-  box-shadow: inset 0 0 0 3px #6cf2c1;
+/* ----- Main: board + sidebar ----- */
+main {
+  display: grid;
+  grid-template-columns: 900px 1fr;
+  gap: 36px;
+  align-items: start;
 }
 
-/* --- Buttons --- */
+/* board element from chessboard.js */
+#board {
+  width: 900px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  border-radius: 4px;
+}
 
+/* ----- Right-side sidebar: AI panel + Game History ----- */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 900px;
+}
+.panel {
+  background: #2a2520;
+  border: 1px solid #3a302a;
+  border-radius: 10px;
+  padding: 22px 24px;
+  overflow-y: auto;
+}
+.panel-ai      { height: 420px; flex-shrink: 0; }
+.panel-history { flex: 1; }
+
+.panel h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #c89b3c;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #3a302a;
+  margin-bottom: 16px;
+}
+
+/* AI move rows (server returns <div> tags) */
+#ai-panel {
+  font-family: "Consolas", "SF Mono", monospace;
+  font-size: 16px;
+  color: #c89b3c;
+}
+#ai-panel div {
+  padding: 4px 0;
+  white-space: pre;
+}
+#ai-panel div.top-move {
+  color: #f4d68a;
+  font-weight: 700;
+}
+
+/* Game History panel */
+#history-panel {
+  font-family: "Consolas", "SF Mono", monospace;
+  font-size: 14px;
+  color: #d6c8a4;
+}
+.hist-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(58, 48, 42, 0.5);
+}
+.hist-num { color: #8a7960; text-align: right; }
+.hist-w   { color: #f3e9d2; }
+.hist-b   { color: #b89a73; }
+.empty {
+  color: #8a7960;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+}
+
+/* ----- Footer buttons ----- */
 .buttons {
-  margin-top: 12px;
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 18px;
+  padding-top: 12px;
 }
-
 .buttons button {
-  background: #232836;
-  color: #e9ecf3;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 10px 20px;
+  min-width: 160px;
+  height: 56px;
+  padding: 0 28px;
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  border: 1px solid #4a3826;
+  background: #3a2e22;
+  color: #f3e9d2;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
-
 .buttons button:hover {
-  background: #2d3342;
+  background: #4a3826;
+}
+.buttons button:active {
+  transform: translateY(1px);
+}
+#btnReset {
+  background: #c89b3c;
+  color: #1c1814;
+  border-color: #c89b3c;
+}
+#btnReset:hover {
+  background: #d4a850;
 }
