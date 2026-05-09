@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=CyberZero Kiosk
+Comment=Auto-launch chess UI in fullscreen
+Exec=bash -c "sleep 8 && chromium-browser --kiosk --noerrdialogs --disable-translate --disable-pinch --no-first-run --disable-features=TranslateUI http://localhost:8000"
+X-GNOME-Autostart-enabled=true
