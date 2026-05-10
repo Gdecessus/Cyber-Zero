@@ -1,9 +1,14 @@
 import os
 import numpy as np
 import chess
+import requests
 from flask import Flask, jsonify, request, send_from_directory
 from src.ai_engine.model import ChessModel
 from src.ai_engine.mcts import MCTS
+
+
+ARM_URL = "http://localhost:5000"
+ARM_TIMEOUT = 60
 
 
 class ChessGame:
@@ -61,6 +66,16 @@ class ChessGame:
         move = moves[np.argmax(probs)]
         self.board.push(move)
         return move.uci()
+
+    def _arm_send(self, from_sq, to_sq):
+        try:
+            requests.post(
+                f"{ARM_URL}/pick_and_place",
+                json={"from": from_sq, "to": to_sq},
+                timeout=ARM_TIMEOUT,
+            )
+        except requests.exceptions.ConnectionError:
+            pass
 
 
 # FLASK SERVER BELOW
