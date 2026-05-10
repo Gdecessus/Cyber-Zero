@@ -57,6 +57,7 @@ class ChessGame:
             return {"ok": False, "error": "illegal_move"}
 
         self.board.push(move)
+        self._arm_play(move)
         return {"ok": True, "move": move.uci()}
 
     def play_ai_move(self):
@@ -65,7 +66,13 @@ class ChessGame:
             return None
         move = moves[np.argmax(probs)]
         self.board.push(move)
+        self._arm_play(move)
         return move.uci()
+
+    def _arm_play(self, move):
+        from_sq = chess.square_name(move.from_square)
+        to_sq = chess.square_name(move.to_square)
+        self._arm_send(from_sq, to_sq)
 
     def _arm_send(self, from_sq, to_sq):
         try:
