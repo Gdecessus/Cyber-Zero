@@ -56,8 +56,9 @@ class ChessGame:
         if move not in self.board.legal_moves:
             return {"ok": False, "error": "illegal_move"}
 
+        is_capture = self.board.is_capture(move)
         self.board.push(move)
-        self._arm_play(move)
+        self._arm_play(move, is_capture)
         return {"ok": True, "move": move.uci()}
 
     def play_ai_move(self):
@@ -65,13 +66,18 @@ class ChessGame:
         if not moves:
             return None
         move = moves[np.argmax(probs)]
+        is_capture = self.board.is_capture(move)
         self.board.push(move)
-        self._arm_play(move)
+        self._arm_play(move, is_capture)
         return move.uci()
 
-    def _arm_play(self, move):
+    def _arm_play(self, move, is_capture):
         from_sq = chess.square_name(move.from_square)
         to_sq = chess.square_name(move.to_square)
+
+        # take the captured piece off first, then do the move
+        if is_capture:
+            self._arm_send(to_sq, "GRAVE")
         self._arm_send(from_sq, to_sq)
 
     def _arm_send(self, from_sq, to_sq):
