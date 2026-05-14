@@ -26,12 +26,19 @@ class MCTSNode:
             return 0
         return self.total_value / self.visits
 
+    # PUCT score from AlphaZero: c * P * sqrt(N) / (1 + n)
+    # value + bonus that shrinks the more we visit this child
     def exploration_score(self, explore_weight=1.4):
         if self.visits == 0:
             return float('inf')
 
         value_score = self.average_value()
-        explore_bonus = explore_weight * self.prior * np.sqrt(self.parent.visits) / (1 + self.visits)
+
+        # PUCT bonus, built step by step so it's easier to follow
+        sqrt_parent_visits = np.sqrt(self.parent.visits)
+        explore_bonus = explore_weight * self.prior * sqrt_parent_visits
+        explore_bonus = explore_bonus / (1 + self.visits)
+
         return value_score + explore_bonus
 
     def best_child(self):
@@ -44,14 +51,16 @@ class MCTSNode:
                 best_node = child
         return best_node
 
+    # one child per legal move, priors come from the network's policy output
     def expand(self, policy):
         moves = list(self.board.legal_moves)
 
-        # get neural net's prior for each move, then normalize
+        # pull the prior for each legal move out of the 4672-long policy vector
         priors = []
         for m in moves:
             priors.append(policy[move_to_index(m)])
 
+        # renormalise so legal-move priors sum to 1, or fall back to uniform
         total = sum(priors)
         if total > 0:
             for i in range(len(priors)):
@@ -70,8 +79,8 @@ class MCTSNode:
                 prior=priors[i]
             )
 
+    # walk back up to root, flipping value each level (chess is zero-sum)
     def propagate_value(self, value):
-        # walk back up to root, flipping value each level
         node = self
         while node is not None:
             node.visits += 1
@@ -88,18 +97,20 @@ class MCTS:
         self.n_sims = n_sims
         self.root = None
 
+    # run n_sims simulations from this board, return how often each move was visited
     def search(self, board):
         self.root = MCTSNode(board)
         root = self.root
 
+        # each iteration is one full SELECT -> EVALUATE -> EXPAND -> BACKPROPAGATE pass
         for _ in range(self.n_sims):
 
-            # SELECT
+            # SELECT — walk down the tree using UCB until we hit a leaf or game-over
             node = root
             while not node.is_leaf() and not node.is_game_over():
                 node = node.best_child()
 
-            # EVALUATE
+            # EVALUATE — ask the network what it thinks of this position
             if node.is_game_over():
                 val = self._get_terminal_value(node)
             else:
@@ -108,10 +119,10 @@ class MCTS:
                 policy = policy[0]
                 val = val[0][0]
 
-                # EXPAND
+                # EXPAND — add a child for every legal move from this position
                 node.expand(policy)
 
-            # BACKPROPAGATE
+            # BACKPROPAGATE — push the value back up the tree, flipping sign each level
             node.propagate_value(val)
 
         # collect visit counts

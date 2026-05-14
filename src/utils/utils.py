@@ -16,7 +16,9 @@ def move_to_index(move):
     # normal moves: from_sq * 64 + to_sq  (0..4095)
     # promotions:   4096 + from_sq * 4 + promo_type  (4096..4351)
     if move.promotion:
-        return 4096 + move.from_square * 4 + PROMO_INDEX[move.promotion]
+        from_offset = move.from_square * 4
+        promo_offset = PROMO_INDEX[move.promotion]
+        return 4096 + from_offset + promo_offset
     return move.from_square * 64 + move.to_square
 
 

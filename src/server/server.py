@@ -38,24 +38,32 @@ class ChessGame:
         if game_over:
             result = self.board.result()
 
+        # board.turn is True for white, False for black
+        if self.board.turn == chess.WHITE:
+            turn = "w"
+        else:
+            turn = "b"
+
         return {
             "fen": self.board.fen(),
-            # board.turn is True for white, False for black
-            "turn": "w" if self.board.turn == chess.WHITE else "b",
+            "turn": turn,
             "legal_moves": moves,
             "game_over": game_over,
             "result": result,
         }
 
+    # validates a player move, updates the board, then tells the arm to execute it
     def apply_move(self, move_uci):
         try:
             move = chess.Move.from_uci(move_uci)
         except ValueError:
             return {"ok": False, "error": "invalid_format"}
 
+        # only legal moves get through — this is our defence against bad UI input
         if move not in self.board.legal_moves:
             return {"ok": False, "error": "illegal_move"}
 
+        # if this is a capture, figure out which graveyard the dead piece goes to
         grave = None
         if self.board.is_capture(move):
             # captured piece is whoever isn't moving
@@ -64,10 +72,12 @@ class ChessGame:
         self._arm_play(move, grave)
         return {"ok": True, "move": move.uci()}
 
+    # asks MCTS for the best move from the current position, then plays it physically
     def play_ai_move(self):
         moves, probs = self.mcts.get_move_probs(self.board, temperature=0.1)
         if not moves:
             return None
+        # pick the move with the highest probability from MCTS
         move = moves[np.argmax(probs)]
         grave = None
         if self.board.is_capture(move):
@@ -76,6 +86,7 @@ class ChessGame:
         self._arm_play(move, grave)
         return move.uci()
 
+    # turn a chess move into one or two physical arm actions
     def _arm_play(self, move, grave):
         from_sq = chess.square_name(move.from_square)
         to_sq = chess.square_name(move.to_square)
@@ -85,6 +96,7 @@ class ChessGame:
             self._arm_send(to_sq, grave)
         self._arm_send(from_sq, to_sq)
 
+    # one HTTP call to the arm server — blocks until the physical motion is done
     def _arm_send(self, from_sq, to_sq):
         try:
             requests.post(
