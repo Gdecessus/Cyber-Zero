@@ -33,13 +33,14 @@ echo "[2/6] Installing Python dependencies..."
 cd "$PROJECT_DIR"
 pip3 install --break-system-packages -r requirements.txt
 
-# ---- 4. Install systemd service ----
+# ---- 4. Install systemd services ----
 echo ""
-echo "[3/6] Installing systemd service..."
+echo "[3/6] Installing systemd services..."
+sudo cp deploy/cyberzero-arm.service /etc/systemd/system/cyberzero-arm.service
 sudo cp deploy/cyberzero.service /etc/systemd/system/cyberzero.service
 sudo systemctl daemon-reload
-sudo systemctl enable cyberzero
-sudo systemctl start cyberzero
+sudo systemctl enable cyberzero-arm cyberzero
+sudo systemctl start cyberzero-arm cyberzero
 
 # ---- 5. Install Chromium kiosk autostart ----
 echo ""

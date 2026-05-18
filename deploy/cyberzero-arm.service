@@ -1,0 +1,19 @@
+[Unit]
+Description=CyberZero arm server
+After=network-online.target
+Wants=network-online.target
+Before=cyberzero.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/Cyber-Zero
+ExecStart=/usr/bin/python3 -m src.robot.arm_server
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
