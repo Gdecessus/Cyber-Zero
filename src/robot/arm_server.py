@@ -97,9 +97,8 @@ def place():
     if square not in a.poses:
         return jsonify({"error": f"unknown square: {square}"}), 404
 
-    piece_size = data.get("piece_size")
-    a.place(square, piece_size)
-    return jsonify({"ok": True, "action": "place", "square": square, "piece_size": piece_size})
+    a.place(square)
+    return jsonify({"ok": True, "action": "place", "square": square})
 
 
 @app.route("/pick_and_place", methods=["POST"])
@@ -107,16 +106,14 @@ def pick_and_place():
     data = request.get_json()
     from_sq = data.get("from", "").upper()
     to_sq = data.get("to", "").upper()
-    piece_size = data.get("piece_size")
-
     a = get_arm()
     if from_sq not in a.poses:
         return jsonify({"error": f"unknown square: {from_sq}"}), 404
     if to_sq not in a.poses:
         return jsonify({"error": f"unknown square: {to_sq}"}), 404
 
-    a.pick_and_place(from_sq, to_sq, piece_size)
-    return jsonify({"ok": True, "from": from_sq, "to": to_sq, "piece_size": piece_size})
+    a.pick_and_place(from_sq, to_sq)
+    return jsonify({"ok": True, "from": from_sq, "to": to_sq})
 
 
 @app.route("/adjust", methods=["POST"])
