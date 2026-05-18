@@ -1,10 +1,11 @@
 import os
 import json
 import time
-import requests
-from urllib.parse import quote
+import serial
 
-ARM_URL = "http://192.168.4.1"
+# Waveshare RoArm-M3-S is connected to the Pi over USB serial (CP210x bridge).
+ARM_SERIAL_PORT = os.environ.get("ARM_SERIAL_PORT", "/dev/ttyUSB0")
+ARM_BAUD = 115200
 
 # gripper servo positions — LOWER value = wider/more open, HIGHER = more closed
 HAND_OPEN = 2.78
@@ -24,9 +25,9 @@ POSES_PATH = os.path.join(os.path.dirname(__file__), "poses.json")
 
 class Arm:
 
-    def __init__(self, poses_path=POSES_PATH):
-        self.session = requests.Session()
+    def __init__(self, poses_path=POSES_PATH, port=ARM_SERIAL_PORT, baud=ARM_BAUD):
         self.poses = {}
+        self.ser = None
 
         # load the 64-square joint angles I calibrated by hand
         if os.path.exists(poses_path):
@@ -36,16 +37,28 @@ class Arm:
         else:
             print(f"No poses file at {poses_path}")
 
-    # talk to the arm — pack the command into a URL and send it to the arm's web endpoint
-    def send(self, cmd):
-        cmd_str = json.dumps(cmd, separators=(",", ":"))
-        url = f"{ARM_URL}/js?json={quote(cmd_str, safe='')}"
+        # open the serial port to the arm; on Linux this is /dev/ttyUSB0 by default
         try:
-            r = self.session.get(url, timeout=3.0)
-            r.raise_for_status()
-            return r.text.strip()
-        except requests.exceptions.RequestException as e:
-            print(f"Arm error: {e}")
+            self.ser = serial.Serial(port, baud, timeout=1.0)
+            time.sleep(2.0)  # arm controller boots when serial opens — wait for it
+            self.ser.reset_input_buffer()
+            print(f"Arm connected on {port} @ {baud} baud")
+        except serial.SerialException as e:
+            print(f"Arm serial open failed ({port}): {e}")
+            self.ser = None
+
+    # talk to the arm — send a JSON line, read the JSON response
+    def send(self, cmd):
+        if self.ser is None:
+            return None
+        cmd_str = json.dumps(cmd, separators=(",", ":"))
+        try:
+            self.ser.write((cmd_str + "\n").encode())
+            self.ser.flush()
+            resp = self.ser.readline().decode(errors="ignore").strip()
+            return resp if resp else None
+        except serial.SerialException as e:
+            print(f"Arm serial error: {e}")
             return None
 
     # T:1051 is the Waveshare command code that asks the arm to report its joint angles
