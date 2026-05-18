@@ -10,15 +10,11 @@ ARM_BAUD = 115200
 # gripper servo positions — LOWER value = wider/more open, HIGHER = more closed
 HAND_OPEN = 2.78
 HAND_CLOSED = 2.99
-# scoop = wider than HAND_OPEN, used only during pickup descent so the gripper
-# is wide enough to envelop slightly off-centre pieces. Set HAND_SCOOP = HAND_OPEN
-# to disable scoop behaviour (reverts to old single-width pickup).
-HAND_SCOOP = 2.65
-
-# The gripper opens only on the A side (the H-side jaw is static). The scoop
-# is encoded directly in poses.json: each square's approach.base sits +0.025
-# toward H of its descend.base, so the natural descent path (approach -> descend)
-# is diagonal H -> A, which acts as the scoop.
+# HAND_SCOOP was a wider-open width used during pickup, intended to envelop
+# off-centre pieces. It was causing pickups to drift toward H because the
+# static H-jaw stays put while the A-jaw travels further to close, leaving
+# the piece pushed against the H-side. Disabled by aliasing to HAND_OPEN.
+HAND_SCOOP = HAND_OPEN
 
 POSES_PATH = os.path.join(os.path.dirname(__file__), "poses.json")
 
