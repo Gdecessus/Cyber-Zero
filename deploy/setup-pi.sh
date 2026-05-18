@@ -36,6 +36,9 @@ echo ""
 echo "[2/6] Installing Python dependencies..."
 cd "$PROJECT_DIR"
 pip3 install --break-system-packages -r requirements.txt
+# piwheels serves a broken old flatbuffers (20181003210633) that uses the
+# removed `imp` module — install a working version directly from PyPI.
+pip3 install --break-system-packages --index-url https://pypi.org/simple "flatbuffers>=25.9.23"
 
 # ---- 4. Install systemd services (substituting user + paths) ----
 echo ""
