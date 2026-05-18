@@ -20,9 +20,13 @@ class ChessGame:
 
         self.mcts = MCTS(self.model, n_sims)
         self.board = chess.Board()
+        # bumps every reset so an in-flight AI move can detect the game changed
+        self.game_id = 0
 
     def reset(self):
         self.board.reset()
+        self.mcts.root = None
+        self.game_id += 1
 
     def get_state(self):
         # return everything the frontend needs to draw the board
@@ -74,11 +78,18 @@ class ChessGame:
 
     # asks MCTS for the best move from the current position, then plays it physically
     def play_ai_move(self):
+        # snapshot the game id so we can detect a reset that happened mid-search
+        my_game_id = self.game_id
         moves, probs = self.mcts.get_move_probs(self.board, temperature=0.1)
+        if self.game_id != my_game_id:
+            # user hit New Game while we were thinking — drop the move
+            return None
         if not moves:
             return None
         # pick the move with the highest probability from MCTS
         move = moves[np.argmax(probs)]
+        if move not in self.board.legal_moves:
+            return None
         grave = None
         if self.board.is_capture(move):
             grave = "GRAVEB" if self.board.turn == chess.WHITE else "GRAVEW"
