@@ -47,16 +47,28 @@ class Arm:
             print(f"Arm serial open failed ({port}): {e}")
             self.ser = None
 
-    # talk to the arm — send a JSON line, read the JSON response
+    # talk to the arm — send a JSON line, read the JSON response.
+    # The arm streams state continuously, so we drop any buffered bytes
+    # before sending and read until we get a line that parses as JSON.
     def send(self, cmd):
         if self.ser is None:
             return None
         cmd_str = json.dumps(cmd, separators=(",", ":"))
         try:
+            self.ser.reset_input_buffer()
             self.ser.write((cmd_str + "\n").encode())
             self.ser.flush()
-            resp = self.ser.readline().decode(errors="ignore").strip()
-            return resp if resp else None
+            # try a few lines until we get a parseable JSON response (or give up)
+            for _ in range(5):
+                resp = self.ser.readline().decode(errors="ignore").strip()
+                if not resp:
+                    continue
+                try:
+                    json.loads(resp)
+                    return resp
+                except json.JSONDecodeError:
+                    continue
+            return None
         except serial.SerialException as e:
             print(f"Arm serial error: {e}")
             return None
