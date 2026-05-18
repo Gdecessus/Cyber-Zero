@@ -271,28 +271,28 @@
   },
   "B2": {
     "descend": {
-      "base": -0.13,
+      "base": -0.125,
       "shoulder": 0.82,
       "elbow": 0.757786509,
       "wrist": 1.5,
       "roll": -0.148796136
     },
     "hover": {
-      "base": -0.13,
+      "base": -0.125,
       "shoulder": 0.52,
       "elbow": 0.757786509,
       "wrist": 1.5,
       "roll": -0.148796136
     },
     "approach": {
-      "base": -0.13,
+      "base": -0.125,
       "shoulder": 0.7,
       "elbow": 0.757786509,
       "wrist": 1.5,
       "roll": -0.148796136
     },
     "drop": {
-      "base": -0.165,
+      "base": -0.16,
       "shoulder": 0.8,
       "elbow": 0.757786509,
       "wrist": 1.5,
@@ -511,28 +511,28 @@
   },
   "C2": {
     "descend": {
-      "base": -0.032,
+      "base": -0.027,
       "shoulder": 0.78,
       "elbow": 0.834486,
       "wrist": 1.45,
       "roll": -0.055223
     },
     "hover": {
-      "base": -0.032,
+      "base": -0.027,
       "shoulder": 0.48,
       "elbow": 0.834486,
       "wrist": 1.45,
       "roll": -0.055223
     },
     "approach": {
-      "base": -0.032,
+      "base": -0.027,
       "shoulder": 0.66,
       "elbow": 0.834486,
       "wrist": 1.45,
       "roll": -0.055223
     },
     "drop": {
-      "base": -0.067,
+      "base": -0.062,
       "shoulder": 0.76,
       "elbow": 0.834486,
       "wrist": 1.45,
