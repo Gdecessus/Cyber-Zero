@@ -8,13 +8,8 @@ ARM_SERIAL_PORT = os.environ.get("ARM_SERIAL_PORT", "/dev/ttyUSB0")
 ARM_BAUD = 115200
 
 # gripper servo positions — LOWER value = wider/more open, HIGHER = more closed
-HAND_OPEN = 2.78
+HAND_OPEN = 2.75
 HAND_CLOSED = 2.99
-# HAND_SCOOP was a wider-open width used during pickup, intended to envelop
-# off-centre pieces. It was causing pickups to drift toward H because the
-# static H-jaw stays put while the A-jaw travels further to close, leaving
-# the piece pushed against the H-side. Disabled by aliasing to HAND_OPEN.
-HAND_SCOOP = HAND_OPEN
 
 POSES_PATH = os.path.join(os.path.dirname(__file__), "poses.json")
 
@@ -99,10 +94,7 @@ class Arm:
         }
         self.send(cmd)
 
-    # full pickup sequence — hover, approach, descend, grip, come back up.
-    # The H-side scoop is encoded directly in poses.json: approach.base sits
-    # slightly toward H of descend.base, so the descent from approach to
-    # descend is naturally diagonal (H -> A) and acts as the scoop.
+    # full pickup sequence — hover, approach, descend, grip, come back up
     def pick(self, square):
         square = square.upper()
         travel = self.poses[square]["hover"]
@@ -110,16 +102,15 @@ class Arm:
         descend = self.poses[square]["descend"]
 
         # hover above the square first so we don't bump anything on the way in
-        self.move_to(travel, HAND_SCOOP)
+        self.move_to(travel, HAND_OPEN)
         time.sleep(1.2)
 
-        # approach (H-shifted in poses.json) — gripper just above and toward H
-        self.move_to(approach, HAND_SCOOP)
+        # come down to just above the piece
+        self.move_to(approach, HAND_OPEN)
         time.sleep(0.8)
 
-        # descend straight down to the calibrated descend pose; the diagonal
-        # path from approach to descend is the scoop
-        self.move_to(descend, HAND_SCOOP)
+        # all the way down to grip height
+        self.move_to(descend, HAND_OPEN)
         time.sleep(0.9)
 
         # close the gripper around the piece
