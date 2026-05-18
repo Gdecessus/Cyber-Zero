@@ -8,10 +8,14 @@
 
 set -e   # exit immediately on error
 
-PROJECT_DIR="/home/pi/Cyber-Zero"
+# Use the current user (whoever runs this script) and their home directory.
+TARGET_USER="$USER"
+PROJECT_DIR="$HOME/Cyber-Zero"
 
 echo "============================================"
 echo "  CyberZero Pi Setup"
+echo "  user:    $TARGET_USER"
+echo "  project: $PROJECT_DIR"
 echo "============================================"
 
 # ---- 1. Verify project is in the right place ----
@@ -33,11 +37,15 @@ echo "[2/6] Installing Python dependencies..."
 cd "$PROJECT_DIR"
 pip3 install --break-system-packages -r requirements.txt
 
-# ---- 4. Install systemd services ----
+# ---- 4. Install systemd services (substituting user + paths) ----
 echo ""
 echo "[3/6] Installing systemd services..."
-sudo cp deploy/cyberzero-arm.service /etc/systemd/system/cyberzero-arm.service
-sudo cp deploy/cyberzero.service /etc/systemd/system/cyberzero.service
+for svc in cyberzero-arm cyberzero; do
+    sed -e "s|User=pi|User=$TARGET_USER|" \
+        -e "s|Group=pi|Group=$TARGET_USER|" \
+        -e "s|/home/pi/Cyber-Zero|$PROJECT_DIR|g" \
+        "deploy/${svc}.service" | sudo tee "/etc/systemd/system/${svc}.service" > /dev/null
+done
 sudo systemctl daemon-reload
 sudo systemctl enable cyberzero-arm cyberzero
 sudo systemctl start cyberzero-arm cyberzero
@@ -45,20 +53,20 @@ sudo systemctl start cyberzero-arm cyberzero
 # ---- 5. Install Chromium kiosk autostart ----
 echo ""
 echo "[4/6] Installing Chromium kiosk autostart..."
-mkdir -p /home/pi/.config/autostart
-cp deploy/cyberzero-kiosk.desktop /home/pi/.config/autostart/cyberzero-kiosk.desktop
+mkdir -p "$HOME/.config/autostart"
+cp deploy/cyberzero-kiosk.desktop "$HOME/.config/autostart/cyberzero-kiosk.desktop"
 
 # ---- 6. Disable screen blanking and enable auto-login ----
 echo ""
 echo "[5/6] Configuring desktop auto-login and disabling screen blanking..."
-sudo raspi-config nonint do_boot_behaviour B4   # Desktop auto-login as 'pi'
+sudo raspi-config nonint do_boot_behaviour B4   # Desktop auto-login as current user
 sudo raspi-config nonint do_blanking 1          # Disable screen blanking
 
 # ---- 7. Hide mouse cursor ----
 echo ""
 echo "[6/6] Hiding mouse cursor when idle..."
-mkdir -p /home/pi/.config/lxsession/LXDE-pi
-AUTOSTART="/home/pi/.config/lxsession/LXDE-pi/autostart"
+mkdir -p "$HOME/.config/lxsession/LXDE-pi"
+AUTOSTART="$HOME/.config/lxsession/LXDE-pi/autostart"
 if [ ! -f "$AUTOSTART" ]; then
     touch "$AUTOSTART"
 fi
@@ -72,18 +80,18 @@ echo "============================================"
 echo "  SETUP COMPLETE"
 echo "============================================"
 echo ""
-echo "Verify the server is running:"
-echo "  systemctl status cyberzero"
+echo "Verify the services are running:"
+echo "  systemctl status cyberzero-arm cyberzero"
 echo ""
 echo "Reboot to test the kiosk:"
 echo "  sudo reboot"
 echo ""
 echo "After reboot, the Pi will:"
 echo "  1. Auto-login to desktop"
-echo "  2. Start the Flask server in the background"
+echo "  2. Start arm server + chess server in the background"
 echo "  3. Launch Chromium fullscreen at localhost:8000"
 echo "  4. Hide the mouse cursor"
 echo ""
 echo "If anything goes wrong, SSH in from another device:"
-echo "  ssh pi@$(hostname -I | awk '{print $1}')"
+echo "  ssh $TARGET_USER@$(hostname -I | awk '{print $1}')"
 echo ""
