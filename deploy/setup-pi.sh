@@ -29,7 +29,7 @@ fi
 echo ""
 echo "[1/6] Installing system packages..."
 sudo apt update
-sudo apt install -y python3-pip chromium-browser unclutter
+sudo apt install -y python3-pip chromium unclutter
 
 # ---- 3. Install Python dependencies ----
 echo ""
