@@ -15,7 +15,7 @@
       "roll": -0.358951504
     },
     "approach": {
-      "base": -0.19,
+      "base": -0.215,
       "shoulder": 0.744,
       "elbow": 0.538427257,
       "wrist": 1.5,
@@ -45,7 +45,7 @@
       "roll": -0.242368964
     },
     "approach": {
-      "base": -0.201,
+      "base": -0.226,
       "shoulder": 0.72,
       "elbow": 0.68108747,
       "wrist": 1.553922538,
@@ -75,7 +75,7 @@
       "roll": -0.25
     },
     "approach": {
-      "base": -0.225,
+      "base": -0.25,
       "shoulder": 0.56,
       "elbow": 1.05,
       "wrist": 1.35,
@@ -105,7 +105,7 @@
       "roll": -0.28
     },
     "approach": {
-      "base": -0.255,
+      "base": -0.28,
       "shoulder": 0.44,
       "elbow": 1.33,
       "wrist": 1.22,
@@ -135,7 +135,7 @@
       "roll": -0.3
     },
     "approach": {
-      "base": -0.318612,
+      "base": -0.343611696,
       "shoulder": 0.29,
       "elbow": 1.68,
       "wrist": 1.0,
@@ -165,7 +165,7 @@
       "roll": -0.4
     },
     "approach": {
-      "base": -0.355,
+      "base": -0.38,
       "shoulder": 0.21,
       "elbow": 1.84,
       "wrist": 0.96,
@@ -195,7 +195,7 @@
       "roll": -0.45
     },
     "approach": {
-      "base": -0.455,
+      "base": -0.48,
       "shoulder": 0.11,
       "elbow": 2.03,
       "wrist": 0.87,
@@ -225,7 +225,7 @@
       "roll": -0.708699124
     },
     "approach": {
-      "base": -0.587058,
+      "base": -0.612058334,
       "shoulder": -0.025631,
       "elbow": 2.23807797,
       "wrist": 0.777728259,
@@ -255,7 +255,7 @@
       "roll": -0.206349
     },
     "approach": {
-      "base": -0.099,
+      "base": -0.124,
       "shoulder": 0.73,
       "elbow": 0.578539,
       "wrist": 1.5,
@@ -285,7 +285,7 @@
       "roll": -0.148796136
     },
     "approach": {
-      "base": -0.105,
+      "base": -0.13,
       "shoulder": 0.7,
       "elbow": 0.757786509,
       "wrist": 1.5,
@@ -315,7 +315,7 @@
       "roll": -0.2
     },
     "approach": {
-      "base": -0.115,
+      "base": -0.14,
       "shoulder": 0.54,
       "elbow": 1.13,
       "wrist": 1.3,
@@ -345,7 +345,7 @@
       "roll": -0.22
     },
     "approach": {
-      "base": -0.135,
+      "base": -0.16,
       "shoulder": 0.42,
       "elbow": 1.41,
       "wrist": 1.17,
@@ -375,7 +375,7 @@
       "roll": -0.24
     },
     "approach": {
-      "base": -0.175,
+      "base": -0.2,
       "shoulder": 0.27,
       "elbow": 1.76,
       "wrist": 0.95,
@@ -405,7 +405,7 @@
       "roll": -0.28
     },
     "approach": {
-      "base": -0.205,
+      "base": -0.23,
       "shoulder": 0.19,
       "elbow": 1.92,
       "wrist": 0.9,
@@ -435,7 +435,7 @@
       "roll": -0.32
     },
     "approach": {
-      "base": -0.275,
+      "base": -0.3,
       "shoulder": 0.09,
       "elbow": 2.11,
       "wrist": 0.81,
@@ -465,7 +465,7 @@
       "roll": -0.432877
     },
     "approach": {
-      "base": -0.365,
+      "base": -0.39,
       "shoulder": -0.067609,
       "elbow": 2.311401,
       "wrist": 0.735101,
@@ -495,7 +495,7 @@
       "roll": -0.078379
     },
     "approach": {
-      "base": 0.009,
+      "base": -0.016,
       "shoulder": 0.72,
       "elbow": 0.605797,
       "wrist": 1.5,
@@ -525,7 +525,7 @@
       "roll": -0.055223
     },
     "approach": {
-      "base": -0.007,
+      "base": -0.032,
       "shoulder": 0.66,
       "elbow": 0.834486,
       "wrist": 1.45,
@@ -555,7 +555,7 @@
       "roll": -0.1
     },
     "approach": {
-      "base": -0.005,
+      "base": -0.03,
       "shoulder": 0.505,
       "elbow": 1.21,
       "wrist": 1.24,
@@ -585,7 +585,7 @@
       "roll": -0.13
     },
     "approach": {
-      "base": -0.025,
+      "base": -0.05,
       "shoulder": 0.38,
       "elbow": 1.49,
       "wrist": 1.09,
@@ -615,7 +615,7 @@
       "roll": -0.15
     },
     "approach": {
-      "base": -0.025,
+      "base": -0.05,
       "shoulder": 0.22,
       "elbow": 1.8,
       "wrist": 0.95,
@@ -645,7 +645,7 @@
       "roll": -0.15
     },
     "approach": {
-      "base": -0.055,
+      "base": -0.08,
       "shoulder": 0.14,
       "elbow": 1.96,
       "wrist": 0.9,
@@ -675,7 +675,7 @@
       "roll": -0.18
     },
     "approach": {
-      "base": -0.055,
+      "base": -0.08,
       "shoulder": 0.04,
       "elbow": 2.15,
       "wrist": 0.81,
@@ -705,7 +705,7 @@
       "roll": -0.141854
     },
     "approach": {
-      "base": -0.102,
+      "base": -0.127,
       "shoulder": -0.114,
       "elbow": 2.38176,
       "wrist": 0.689537,
@@ -735,7 +735,7 @@
       "roll": 0.023009712
     },
     "approach": {
-      "base": 0.102,
+      "base": 0.077,
       "shoulder": 0.72,
       "elbow": 0.608990373,
       "wrist": 1.5,
@@ -751,7 +751,7 @@
   },
   "D2": {
     "approach": {
-      "base": 0.13,
+      "base": 0.105,
       "shoulder": 0.68,
       "elbow": 0.8,
       "wrist": 1.48,
@@ -795,7 +795,7 @@
       "roll": -0.01
     },
     "approach": {
-      "base": 0.132,
+      "base": 0.107,
       "shoulder": 0.514,
       "elbow": 1.18,
       "wrist": 1.28,
@@ -825,7 +825,7 @@
       "roll": 0.1
     },
     "approach": {
-      "base": 0.155,
+      "base": 0.13,
       "shoulder": 0.39,
       "elbow": 1.46,
       "wrist": 1.12,
@@ -855,7 +855,7 @@
       "roll": 0.08
     },
     "approach": {
-      "base": 0.145,
+      "base": 0.12,
       "shoulder": 0.24,
       "elbow": 1.81,
       "wrist": 0.92,
@@ -885,7 +885,7 @@
       "roll": 0.1
     },
     "approach": {
-      "base": 0.165,
+      "base": 0.14,
       "shoulder": 0.16,
       "elbow": 1.97,
       "wrist": 0.87,
@@ -915,7 +915,7 @@
       "roll": 0.12
     },
     "approach": {
-      "base": 0.168,
+      "base": 0.143,
       "shoulder": 0.06,
       "elbow": 2.16,
       "wrist": 0.79,
@@ -945,7 +945,7 @@
       "roll": 0.127320405
     },
     "approach": {
-      "base": 0.178398,
+      "base": 0.153398079,
       "shoulder": -0.134544,
       "elbow": 2.416019741,
       "wrist": 0.659611739,
@@ -975,7 +975,7 @@
       "roll": 0.119650501
     },
     "approach": {
-      "base": 0.195,
+      "base": 0.17,
       "shoulder": 0.733,
       "elbow": 0.559519493,
       "wrist": 1.5,
@@ -1005,7 +1005,7 @@
       "roll": 0.15
     },
     "approach": {
-      "base": 0.237,
+      "base": 0.212,
       "shoulder": 0.545,
       "elbow": 1.13,
       "wrist": 1.296,
@@ -1035,7 +1035,7 @@
       "roll": 0.13
     },
     "approach": {
-      "base": 0.265,
+      "base": 0.24,
       "shoulder": 0.42,
       "elbow": 1.41,
       "wrist": 1.16,
@@ -1065,7 +1065,7 @@
       "roll": 0.21
     },
     "approach": {
-      "base": 0.295,
+      "base": 0.27,
       "shoulder": 0.27,
       "elbow": 1.74,
       "wrist": 0.98,
@@ -1095,7 +1095,7 @@
       "roll": 0.15
     },
     "approach": {
-      "base": 0.235,
+      "base": 0.21,
       "shoulder": 0.7,
       "elbow": 0.758,
       "wrist": 1.5,
@@ -1125,7 +1125,7 @@
       "roll": 0.25
     },
     "approach": {
-      "base": 0.325,
+      "base": 0.3,
       "shoulder": 0.19,
       "elbow": 1.9,
       "wrist": 0.936,
@@ -1155,7 +1155,7 @@
       "roll": 0.28
     },
     "approach": {
-      "base": 0.375,
+      "base": 0.35,
       "shoulder": 0.09,
       "elbow": 2.09,
       "wrist": 0.85,
@@ -1185,7 +1185,7 @@
       "roll": 0.306740304
     },
     "approach": {
-      "base": 0.425,
+      "base": 0.4,
       "shoulder": -0.077408,
       "elbow": 2.323980894,
       "wrist": 0.692975821,
@@ -1215,7 +1215,7 @@
       "roll": 0.2
     },
     "approach": {
-      "base": 0.273,
+      "base": 0.248,
       "shoulder": 0.763,
       "elbow": 0.510048612,
       "wrist": 1.53,
@@ -1245,7 +1245,7 @@
       "roll": 0.27
     },
     "approach": {
-      "base": 0.335,
+      "base": 0.31,
       "shoulder": 0.74,
       "elbow": 0.63,
       "wrist": 1.6,
@@ -1275,7 +1275,7 @@
       "roll": 0.21
     },
     "approach": {
-      "base": 0.345,
+      "base": 0.32,
       "shoulder": 0.579,
       "elbow": 1.01,
       "wrist": 1.4,
@@ -1305,7 +1305,7 @@
       "roll": 0.26
     },
     "approach": {
-      "base": 0.383,
+      "base": 0.358,
       "shoulder": 0.46,
       "elbow": 1.29,
       "wrist": 1.25,
@@ -1335,7 +1335,7 @@
       "roll": 0.32
     },
     "approach": {
-      "base": 0.425,
+      "base": 0.4,
       "shoulder": 0.31,
       "elbow": 1.64,
       "wrist": 1.06,
@@ -1365,7 +1365,7 @@
       "roll": 0.37
     },
     "approach": {
-      "base": 0.465,
+      "base": 0.44,
       "shoulder": 0.23,
       "elbow": 1.8,
       "wrist": 1.013,
@@ -1395,7 +1395,7 @@
       "roll": 0.42
     },
     "approach": {
-      "base": 0.545,
+      "base": 0.52,
       "shoulder": 0.13,
       "elbow": 1.99,
       "wrist": 0.925,
@@ -1425,7 +1425,7 @@
       "roll": 0.48616
     },
     "approach": {
-      "base": 0.671,
+      "base": 0.646,
       "shoulder": -0.020272,
       "elbow": 2.231942,
       "wrist": 0.79,
@@ -1455,7 +1455,7 @@
       "roll": 0.31
     },
     "approach": {
-      "base": 0.365,
+      "base": 0.34,
       "shoulder": 0.772,
       "elbow": 0.46,
       "wrist": 1.58,
@@ -1485,7 +1485,7 @@
       "roll": 0.39
     },
     "approach": {
-      "base": 0.419,
+      "base": 0.394,
       "shoulder": 0.771,
       "elbow": 0.579,
       "wrist": 1.6,
@@ -1515,7 +1515,7 @@
       "roll": 0.33
     },
     "approach": {
-      "base": 0.448,
+      "base": 0.423,
       "shoulder": 0.605,
       "elbow": 0.959,
       "wrist": 1.4,
@@ -1545,7 +1545,7 @@
       "roll": 0.36
     },
     "approach": {
-      "base": 0.494,
+      "base": 0.469,
       "shoulder": 0.49,
       "elbow": 1.24,
       "wrist": 1.25,
@@ -1575,7 +1575,7 @@
       "roll": 0.47
     },
     "approach": {
-      "base": 0.545,
+      "base": 0.52,
       "shoulder": 0.34,
       "elbow": 1.59,
       "wrist": 1.04,
@@ -1605,7 +1605,7 @@
       "roll": 0.53
     },
     "approach": {
-      "base": 0.595,
+      "base": 0.57,
       "shoulder": 0.26,
       "elbow": 1.75,
       "wrist": 0.99,
@@ -1635,7 +1635,7 @@
       "roll": 0.59
     },
     "approach": {
-      "base": 0.695,
+      "base": 0.67,
       "shoulder": 0.16,
       "elbow": 1.94,
       "wrist": 0.908,
@@ -1665,7 +1665,7 @@
       "roll": 0.76
     },
     "approach": {
-      "base": 0.805,
+      "base": 0.78,
       "shoulder": 0.01,
       "elbow": 2.139903,
       "wrist": 0.759704,
@@ -1695,7 +1695,7 @@
       "roll": 0.392699082
     },
     "approach": {
-      "base": 0.455,
+      "base": 0.43,
       "shoulder": 0.81,
       "elbow": 0.385029178,
       "wrist": 1.6,
@@ -1725,7 +1725,7 @@
       "roll": 0.51
     },
     "approach": {
-      "base": 0.505,
+      "base": 0.48,
       "shoulder": 0.81,
       "elbow": 0.5,
       "wrist": 1.6,
@@ -1755,7 +1755,7 @@
       "roll": 0.45
     },
     "approach": {
-      "base": 0.553,
+      "base": 0.528,
       "shoulder": 0.645,
       "elbow": 0.88,
       "wrist": 1.4,
@@ -1785,7 +1785,7 @@
       "roll": 0.5
     },
     "approach": {
-      "base": 0.605,
+      "base": 0.58,
       "shoulder": 0.53,
       "elbow": 1.16,
       "wrist": 1.26,
@@ -1815,7 +1815,7 @@
       "roll": 0.62
     },
     "approach": {
-      "base": 0.665,
+      "base": 0.64,
       "shoulder": 0.38,
       "elbow": 1.47,
       "wrist": 1.07,
@@ -1845,7 +1845,7 @@
       "roll": 0.697961258
     },
     "approach": {
-      "base": 0.735,
+      "base": 0.71,
       "shoulder": 0.343262,
       "elbow": 1.586136135,
       "wrist": 1.09066034,
@@ -1875,7 +1875,7 @@
       "roll": 0.78
     },
     "approach": {
-      "base": 0.835,
+      "base": 0.81,
       "shoulder": 0.26,
       "elbow": 1.74,
       "wrist": 1.04,
@@ -1905,7 +1905,7 @@
       "roll": 0.845
     },
     "approach": {
-      "base": 0.965,
+      "base": 0.94,
       "shoulder": 0.094,
       "elbow": 2.047864352,
       "wrist": 0.793068067,
@@ -1935,7 +1935,7 @@
       "roll": -0.581378719
     },
     "approach": {
-      "base": -0.571719,
+      "base": -0.596718526,
       "shoulder": 0.435301,
       "elbow": 1.159689476,
       "wrist": 1.345301151,
@@ -1965,7 +1965,7 @@
       "roll": 0.805339914
     },
     "approach": {
-      "base": 0.815,
+      "base": 0.790000106,
       "shoulder": 0.487456,
       "elbow": 1.106000148,
       "wrist": 1.250194342,
